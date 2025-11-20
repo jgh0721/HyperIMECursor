@@ -15,6 +15,7 @@ _conan/debug
 _conan/release
 _conan/generated
 vcpkg_installed/
+out/
 
 *.bak
 *.suo

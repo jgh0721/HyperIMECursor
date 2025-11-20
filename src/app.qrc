@@ -1,0 +1,8 @@
+<RCC>
+    <qresource>
+        <file>res/app_icon.ico</file>
+        <file>res/english_icon.ico</file>
+        <file>res/korean_icon.ico</file>
+        <file>res/unknown_icon.ico</file>
+    </qresource>
+</RCC>

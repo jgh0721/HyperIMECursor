@@ -9,6 +9,9 @@
 #include <shellapi.h>
 #include <UIAutomation.h>
 
+#include <QtCore>
+#include <QtWidgets>
+
 #pragma comment(lib, "gdiplus.lib")
 #pragma comment(lib, "imm32.lib")
 #pragma comment(lib, "shell32.lib")
