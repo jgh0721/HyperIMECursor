@@ -21,14 +21,14 @@
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
-       <widget class="QRadioButton" name="radioButton">
+       <widget class="QRadioButton" name="rdoDetectMethod_A">
         <property name="text">
          <string>AttachThreadInput : 빠름, 데드락 위험</string>
         </property>
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QRadioButton" name="radioButton_2">
+       <widget class="QRadioButton" name="rdoDetectMethod_B">
         <property name="text">
          <string>SendMessage : 느림, 안정적</string>
         </property>
@@ -44,28 +44,28 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="2" column="0">
-       <widget class="QCheckBox" name="checkBox_2">
+       <widget class="QCheckBox" name="chkNotifyMethod_Cursor">
         <property name="text">
          <string>마우스 커서</string>
         </property>
        </widget>
       </item>
       <item row="0" column="0">
-       <widget class="QCheckBox" name="checkBox">
+       <widget class="QCheckBox" name="chkNotifyMethod_NotificationIcon">
         <property name="text">
          <string>통지영역 아이콘</string>
         </property>
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QCheckBox" name="checkBox_3">
+       <widget class="QCheckBox" name="chkNotifyMethod_Popup">
         <property name="text">
          <string>미니 팝업</string>
         </property>
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QCheckBox" name="checkBox_4">
+       <widget class="QCheckBox" name="chkNotifyMethod_Caret">
         <property name="text">
          <string>텍스트 캐럿</string>
         </property>

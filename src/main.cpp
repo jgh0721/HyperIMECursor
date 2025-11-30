@@ -1,75 +1,9 @@
 ﻿#include "stdafx.h"
 #include "main.hpp"
 #include "imeborderindicator.hpp"
+#include "settings.hpp"
 
-///////////////////////////////////////////////////////////////////////////////
-
-namespace nsCmn
-{
-    __inline std::string format_arg_list( const char* fmt, va_list args )
-    {
-        if( !fmt ) return "";
-        int   result = -1, length = 512;
-        char* buffer = 0;
-        while( result == -1 )
-        {
-            if( buffer )
-                delete[] buffer;
-            buffer = new char[ length + 1 ];
-            memset( buffer, 0, ( length + 1 ) * sizeof( char ) );
-            result = _vsnprintf_s( buffer, length, _TRUNCATE, fmt, args );
-            length *= 2;
-        }
-        std::string s( buffer );
-        delete[] buffer;
-        return s;
-    }
-
-    __inline std::wstring format_arg_list( const wchar_t* fmt, va_list args )
-    {
-        if( !fmt ) return L"";
-        int   result = -1, length = 512;
-        wchar_t* buffer = 0;
-        while( result == -1 )
-        {
-            if( buffer )
-                delete[] buffer;
-            buffer = new wchar_t[ length + 1 ];
-            memset( buffer, 0, ( length + 1 ) * sizeof( wchar_t ) );
-            result = _vsnwprintf_s( buffer, length, _TRUNCATE, fmt, args );
-            length *= 2;
-        }
-        std::wstring s( buffer );
-        delete[] buffer;
-        return s;
-    }
-
-    std::string Format( const char* fmt, ... )
-    {
-        va_list args;
-        va_start( args, fmt );
-        auto s = format_arg_list( fmt, args );
-        va_end( args );
-        return s;
-    }
-
-    std::wstring Format( const wchar_t* fmt, ... )
-    {
-        va_list args;
-        va_start( args, fmt );
-        auto s = format_arg_list( fmt, args );
-        va_end( args );
-        return s;
-    }
-
-    void PrintDebugString( const std::wstring& Str )
-    {
-#if defined(_DEBUG)
-        OutputDebugStringW( Str.c_str() );
-        OutputDebugStringW( L"\n" );
-#endif
-    }
-}
+#include "ui/opt.hpp"
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -182,49 +116,6 @@ bool IsProcessInAppContainor( HWND hWnd )
     return IsInAppContainor;
 }
 
-// //bool CreateMainWnd( HINSTANCE hInstance )
-// //{
-// //    bool IsSuccess = false;
-// //    WNDCLASSEX wcex = { 0 };
-// //    const wchar_t WNDNAME[] = L"HyperIME Indicator Main Window";
-// //    const wchar_t CLASSNAME[] = L"HyperIME Indicator Main Class";
-// //
-// //    do
-// //    {
-// //        // 메인 윈도우 클래스 등록
-// //
-// //        wcex.cbSize         = sizeof( WNDCLASSEX );
-// //        wcex.style          = CS_HREDRAW | CS_VREDRAW;
-// //        wcex.lpfnWndProc    = MainWndProc;
-// //        wcex.hInstance      = hInstance;
-// //        wcex.hIcon          = LoadIcon( NULL, IDI_APPLICATION );
-// //        wcex.hCursor        = LoadCursor( NULL, IDC_ARROW );
-// //        wcex.hbrBackground  = ( HBRUSH )( COLOR_WINDOW + 1 );
-// //        wcex.lpszClassName  = CLASSNAME;
-// //        wcex.hIconSm        = LoadIcon( NULL, IDI_APPLICATION );
-// //
-// //        IsSuccess = RegisterClassExW( &wcex ) != 0;
-// //        if( IsSuccess == false )
-// //            break;
-// //
-// //        const auto hWnd = CreateWindowW( CLASSNAME, WNDNAME, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, hInstance, nullptr );
-// //
-// //        if( hWnd != nullptr )
-// //        {
-// //            ShowWindow( hWnd, SW_HIDE );
-// //            UpdateWindow( hWnd );
-// //        }
-// //
-// //        IsSuccess = hWnd != nullptr;
-// //
-// //    } while( false );
-// //
-// //    if( IsSuccess == false )
-// //        UnregisterClassW( CLASSNAME, hInstance );
-// //
-// //    return IsSuccess;
-// //}
-// //
 // //bool CreateIndicatorWnd( HINSTANCE hInstance, HWND& hWnd )
 // //{
 // //    bool IsSuccess = false;
@@ -265,75 +156,6 @@ bool IsProcessInAppContainor( HWND hWnd )
 // //        UnregisterClassW( CLASSNAME, hInstance );
 // //
 // //    return IsSuccess;
-// //}
-// //
-// //LRESULT MainWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
-// //{
-// //    switch( message )
-// //    {
-// //        case WM_CREATE: {
-// //            CreateNotificationIcon( hWnd );
-// //            SetTimer( hWnd, IMECheckTimerId, 800, nullptr );
-// //        } break;
-// //
-// //        case WM_TIMER: {
-// //            if( wParam != IMECheckTimerId )
-// //                break;
-// //
-// //            UpdateIMEStatus();
-// //        } break;
-// //        case NotificationIconMsg: {
-// //            if( lParam != WM_RBUTTONUP )
-// //                break;
-// //
-// //             POINT pt;
-// //             GetCursorPos(&pt);
-// //
-// //             HMENU hMenu = CreatePopupMenu();
-// //             AppendMenu(hMenu, MF_STRING, NotificationMenu_About, L"정보(&A)");
-// //             AppendMenu(hMenu, MF_STRING, NotificationMenu_Reset, L"상태 리셋(&R)");
-// //             AppendMenu(hMenu, MF_SEPARATOR, 0, NULL);
-// //             AppendMenu(hMenu, MF_STRING, NotificationMenu_Exit, L"종료(&X)");
-// //
-// //             SetForegroundWindow(hWnd);
-// //             TrackPopupMenu( hMenu, TPM_BOTTOMALIGN | TPM_LEFTALIGN, pt.x, pt.y, 0, hWnd, nullptr );
-// //             DestroyMenu(hMenu);
-// //        } break;
-// //        case WM_COMMAND: {
-// //            const auto Id = LOWORD( wParam );
-// //            if( Id == NotificationMenu_Exit )
-// //            {
-// //                PostQuitMessage( 0 );
-// //            }
-// //            if( Id == NotificationMenu_Reset )
-// //            {
-// //                IsKoreanModeOnHook = false;
-// //                IMEActiveCheckTime = 0;
-// //                UpdateIMEStatus();
-// //            }
-// //            if( Id == NotificationMenu_About )
-// //            {
-// //            }
-// //        } break;
-// //        case WM_DESTROY: {
-// //            KillTimer( hWnd, IMECheckTimerId );
-// //            DestroyNotificationIcon();
-// //
-// //            if( INDICATOR_HWND )
-// //            {
-// //                DestroyWindow( INDICATOR_HWND );
-// //                INDICATOR_HWND = nullptr;
-// //            }
-// //
-// //            PostQuitMessage(0);
-// //        } break;
-// //
-// //        default: {
-// //            return DefWindowProc(hWnd, message, wParam, lParam);
-// //        } break;
-// //    }
-// //
-// //    return 0;
 // //}
 // //
 // //LRESULT HookWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
@@ -442,8 +264,15 @@ int IsKoreanIMEUsingIMM32( HWND hWnd )
             const HWND hIME = ImmGetDefaultIMEWnd( hWnd );
             if( hIME )
             {
-                const auto R = SendMessageW( hIME, WM_IME_CONTROL, IMC_GETCONVERSIONMODE, 0 );
-                Result = ( R & IME_CMODE_NATIVE ) != 0 ? TRUE : FALSE;
+                DWORD_PTR MessageResult = 0;
+                Result = SendMessageTimeoutW( hIME, WM_IME_CONTROL, IMC_GETCONVERSIONMODE, 0, SMTO_NORMAL | SMTO_ABORTIFHUNG | SMTO_ERRORONEXIT, 1000, &MessageResult );
+                if( Result == FALSE )
+                {
+                    Result = -1;
+                    break;
+                }
+
+                Result = ( MessageResult & IME_CMODE_NATIVE ) != 0 ? TRUE : FALSE;
             }
         }
 
@@ -636,6 +465,7 @@ CIMECursorApp::CIMECursorApp( int& argc, char* argv[] )
     m_pTimer = new QTimer( this );
     m_pTrayIcon = new QSystemTrayIcon( this );
     m_pOverlay = new QWndBorderOverlay;
+    m_pUiOpt = new UiOpt;
 
     QMetaObject::invokeMethod( this, "Initialize", Qt::QueuedConnection );
 }
@@ -658,25 +488,14 @@ void CIMECursorApp::Initialize()
 
     do
     {
-        QWidget* w = new QWidget;
+        std::string f = R"(C:\Users\jgh0721\AppData\Local\Autodesk\AutoCAD 2025\R25.0\enu\Template\Drawing1 ISO A1 Layout)";
+        const auto r = ( QVector<QString>() << QString() << "" << "fdsfds" << "" << QString() ).join("|");
 
-        w->resize( 100, 100 );
-        w->setWindowFlags( Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint );
-        QVBoxLayout* pLayout = new QVBoxLayout( w );
-        pLayout->setContentsMargins( 0, 0, 0, 0 );
-        pLayout->setSpacing( 0 );
-        QLabel* pLabel = new QLabel( w );
-        pLayout->addWidget( pLabel );
-        pLabel->setText("영문");
-        pLabel->setFont( QFont( pLabel->font().family(), 14 ) );
-        w->setWindowModality( Qt::ApplicationModal );
-        w->show();
+        const auto rr = r.split( "|", Qt::KeepEmptyParts );
+        const auto rrr = r.split( "|", Qt::SkipEmptyParts );
 
-        const QString f = "D:/Dev/SetOffTestSignDriver.cmd";
-        const auto re = QFileInfo(f).canonicalFilePath();
-        const auto rew = QFileInfo(f).canonicalPath();
 
-        IF_FAILED_BREAK_TO_DEBUG( Hr, InitializeTSF(), L"TSF 서비스 초기화 실패 : 0x%08x", Hr );
+        // IF_FAILED_BREAK_TO_DEBUG( Hr, InitializeTSF(), L"TSF 서비스 초기화 실패 : 0x%08x", Hr );
 
         MouseHook = SetWindowsHookExW( WH_MOUSE_LL, LowLevelMouseProc, hInstance, 0 );
         KeyboardHook = SetWindowsHookExW( WH_KEYBOARD_LL, LowLevelKeyboardProc, hInstance, 0 );
@@ -694,7 +513,15 @@ void CIMECursorApp::Initialize()
         m_pTimer->setInterval( 1000 );
         m_pTimer->start();
 
+        const auto Menu = new QMenu;
+        Menu->addAction( tr("옵션(&O)"), [=]() {
+            m_pUiOpt->show();
+        } );
+        Menu->addSeparator();
+        Menu->addAction( tr("정보(&A)"), [=](){} );
+
         m_pTrayIcon->setIcon( QIcon( ":/res/app_icon.ico" ) );
+        m_pTrayIcon->setContextMenu( Menu );
         m_pTrayIcon->setToolTip( "HyperIMECursor" );
         m_pTrayIcon->show();
 

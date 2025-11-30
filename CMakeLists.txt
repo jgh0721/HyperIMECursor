@@ -47,8 +47,15 @@ find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
 set( FORMS
         src/ui/about.ui
         src/ui/opt.ui
+        src/ui/opt.cpp
+        src/ui/opt.hpp
+        src/ui/indicator.ui
+        src/ui/indicator.cpp
+        src/ui/indicator.hpp
 )
 set( SOURCES
+        src/cmnUtils.cpp
+        src/cmnUtils.hpp
         src/main.cpp
         src/main.hpp
         src/app.qrc
@@ -57,15 +64,18 @@ set( SOURCES
         src/imeborderindicator.hpp
         src/imewindowindicator.cpp
         src/imewindowindicator.hpp
+        src/settings.cpp
+        src/settings.hpp
 )
  set( RESOURCES
-#    src/resource.h
+         #    src/resource.h
  )
 
 # 실행 파일 생성
 qt_standard_project_setup()
 qt6_add_executable(HyperIMECursor ${SOURCES} ${FORMS} ${RESOURCES} )
 
+target_include_directories(HyperIMECursor PRIVATE AFTER ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_precompile_headers(HyperIMECursor PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${CMAKE_CURRENT_SOURCE_DIR}/src/stdafx.h>")
 target_link_libraries(HyperIMECursor PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets)
 set_target_properties(HyperIMECursor PROPERTIES WIN32_EXECUTABLE ON)

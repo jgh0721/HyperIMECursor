@@ -21,3 +21,5 @@
 #define IF_SUCCESS_BREAK( var, expr ) if( ( (var) = (expr) ) == true ) break
 #define IF_FAILED_BREAK( var, expr ) if( FAILED( ((var) = (expr)) ) ) break;
 #define IF_FAILED_BREAK_TO_DEBUG( var, expr, format, ... ) if( FAILED( (var) = (expr) ) ) { nsCmn::PrintDebugString( nsCmn::Format( format, ## __VA_ARGS__ ) ); break; }
+
+#include "cmnUtils.hpp"

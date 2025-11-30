@@ -8,13 +8,8 @@
 const auto KOREAN_MODE_ICON = ":/res/korean_icon.ico";
 const auto ENGLISH_MODE_ICON = ":/res/english_icon.ico";
 
-namespace nsCmn
-{
-    std::string                         Format( const char* fmt, ... );
-    std::wstring                        Format( const wchar_t* fmt, ... );
-    void                                PrintDebugString( const std::wstring& Str );
-}
-
+class UiOpt;
+class UiIndicator;
 class QWndBorderOverlay;
 
 class CIMECursorApp : public QApplication
@@ -42,6 +37,9 @@ private:
     QTimer*                             m_pTimer = nullptr;
     QSystemTrayIcon*                    m_pTrayIcon = nullptr;
     QPointer<QWndBorderOverlay>         m_pOverlay = nullptr;
+
+    QPointer<UiOpt>                     m_pUiOpt = nullptr;
+    QPointer<UiIndicator>               m_pUiIndicator = nullptr;
 };
 
 bool                                    IsProcessInAppContainor( HWND hWnd );
@@ -58,7 +56,6 @@ bool                                    IsProcessInAppContainor( HWND hWnd );
  * IsKoreanIMELayout
  */
 int                                     IsKoreanIMEUsingTSF();
-// CheckIMEViaIMM32
 int                                     IsKoreanIMEUsingIMM32( HWND hWnd );
 int                                     IsKoreanIMEUsingKeyboardLayout( HWND hWnd );
 
