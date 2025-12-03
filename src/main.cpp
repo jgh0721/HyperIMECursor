@@ -4,6 +4,8 @@
 #include "settings.hpp"
 
 #include "ui/opt.hpp"
+#include "ui/indicator.hpp"
+#include "ui/indicator_caret.hpp"
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -39,6 +41,7 @@ int WINAPI wWinMain( HINSTANCE hCurrInstance, HINSTANCE hPrevInstance, LPWSTR pC
             break;
 
         hInstance = hCurrInstance;
+        QApplication::setAttribute( Qt::AA_EnableHighDpiScaling );
 
         CIMECursorApp App( __argc, __argv );
         Q_INIT_RESOURCE( app );
@@ -51,40 +54,6 @@ int WINAPI wWinMain( HINSTANCE hCurrInstance, HINSTANCE hPrevInstance, LPWSTR pC
     CoUninitialize();
     return Ret;
 }
-
-///////////////////////////////////////////////////////////////////////////////
-//
-// //// 통지영역 아이콘
-// //NOTIFYICONDATAW                         NotificationIcon = {0,};
-// //constexpr uint32_t                      NotificationIconId = 1;
-// //constexpr uint32_t                      NotificationIconMsg = WM_USER + 1;
-// //constexpr uint32_t                      NotificationMenu_About = 4000;
-// //constexpr uint32_t                      NotificationMenu_Reset = 8000;
-// //constexpr uint32_t                      NotificationMenu_Exit = 5000;
-// //
-// //// 표시기 설정
-// //HWND                                    INDICATOR_HWND = nullptr;
-// //constexpr int                           INDICATOR_SIZE = 24;  // 표시기 크기
-// //constexpr int                           OFFSET_X = 20;        // 커서로부터의 X 오프셋
-// //constexpr int                           OFFSET_Y = 20;        // 커서로부터의 Y 오프셋
-// //int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR pCmdLine, int nCmdShow )
-// //{
-// //    int Result = 0;
-// //
-// //    do
-// //    {
-// //        IF_FALSE_BREAK_TO_DEBUG( IsSuccess, CreateMainWnd( hInstance ), L"주 화면 창 생성 실패 : %d", ::GetLastError() );
-// //        IF_FALSE_BREAK_TO_DEBUG( IsSuccess, CreateIndicatorWnd( hInstance, INDICATOR_HWND ), L"표시기 생성 실패 : %d", ::GetLastError() );
-// //
-// //        UpdateIndicatorPosition();
-// //
-// //    } while( false );
-// //
-// //    if( INDICATOR_HWND )
-// //        DestroyWindow( INDICATOR_HWND );
-// //
-// //    return Result;
-// //}
 
 bool IsProcessInAppContainor( HWND hWnd )
 {
@@ -116,92 +85,6 @@ bool IsProcessInAppContainor( HWND hWnd )
     return IsInAppContainor;
 }
 
-// //bool CreateIndicatorWnd( HINSTANCE hInstance, HWND& hWnd )
-// //{
-// //    bool IsSuccess = false;
-// //    WNDCLASSEX wcex = { 0 };
-// //    const wchar_t WNDNAME[] = L"HyperIME Indicator Window";
-// //    const wchar_t CLASSNAME[] = L"HyperIME Indicator Class";
-// //
-// //    do
-// //    {
-// //        wcex.cbSize         = sizeof( WNDCLASSEX );
-// //        wcex.style          = CS_HREDRAW | CS_VREDRAW;
-// //        wcex.lpfnWndProc    = HookWndProc;
-// //        wcex.hInstance      = hInstance;
-// //        wcex.hCursor        = LoadCursor( NULL, IDC_ARROW );
-// //        wcex.lpszClassName  = CLASSNAME;
-// //
-// //        IsSuccess = RegisterClassExW( &wcex ) != 0;
-// //        if( IsSuccess == false )
-// //            break;
-// //
-// //        // 레이어드 윈도우 생성
-// //        hWnd = CreateWindowExW( WS_EX_LAYERED | WS_EX_TOPMOST | WS_EX_TOOLWINDOW,
-// //                                CLASSNAME, WNDNAME, WS_POPUP | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, 0, 0, INDICATOR_SIZE, INDICATOR_SIZE,
-// //                                NULL, NULL, hInstance, NULL );
-// //        if( hWnd == nullptr )
-// //            break;
-// //
-// //        // 투명도 설정 (알파 블렌딩)
-// //        SetLayeredWindowAttributes( hWnd, RGB(0, 0, 0), 0, LWA_COLORKEY);
-// //        SetLayeredWindowAttributes( hWnd, 0, 240, LWA_ALPHA);
-// //
-// //        ShowWindow( hWnd, SW_SHOWNOACTIVATE);
-// //        UpdateWindow( hWnd );
-// //
-// //    } while( false );
-// //
-// //    if( IsSuccess == false )
-// //        UnregisterClassW( CLASSNAME, hInstance );
-// //
-// //    return IsSuccess;
-// //}
-// //
-// //LRESULT HookWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
-// //{
-// //    switch( message )
-// //    {
-// //        case WM_CREATE: {} break;
-// //        case WM_PAINT: {
-// //            PAINTSTRUCT ps;
-// //            HDC hdc = BeginPaint( hWnd, &ps );
-// //
-// //            // 더블 버퍼링
-// //            HDC hdcMem = CreateCompatibleDC( hdc );
-// //            HBITMAP hbmMem = CreateCompatibleBitmap( hdc, INDICATOR_SIZE, INDICATOR_SIZE );
-// //            HBITMAP hbmOld = ( HBITMAP )SelectObject( hdcMem, hbmMem );
-// //
-// //            // 배경 투명
-// //            HBRUSH hBrush = CreateSolidBrush( RGB( 0, 0, 0 ) );
-// //            RECT rect = { 0, 0, INDICATOR_SIZE, INDICATOR_SIZE };
-// //            FillRect( hdcMem, &rect, hBrush );
-// //            DeleteObject( hBrush );
-// //
-// //            // 표시기 그리기
-// //            DrawIndicator( hdcMem, IsKoreanMode );
-// //
-// //            // 화면에 복사
-// //            BitBlt( hdc, 0, 0, INDICATOR_SIZE, INDICATOR_SIZE, hdcMem, 0, 0, SRCCOPY );
-// //
-// //            SelectObject( hdcMem, hbmOld );
-// //            DeleteObject( hbmMem );
-// //            DeleteDC( hdcMem );
-// //
-// //            EndPaint( hWnd, &ps );
-// //        } break;
-// //
-// //        case WM_DESTROY:
-// //            return 0;
-// //
-// //        default: {
-// //            return DefWindowProc( hWnd, message, wParam, lParam );
-// //        } break;
-// //    }
-// //
-// //    return 0;
-// //}
-
 int IsKoreanIMEUsingTSF()
 {
     int Result = -1;
@@ -228,7 +111,7 @@ int IsKoreanIMEUsingTSF()
 
     } while( false );
 
-    PrintDebugString( Format( L"%s : Result = %d", __FUNCTIONW__, Result ) );
+    //PrintDebugString( Format( L"%s : Result = %d", __FUNCTIONW__, Result ) );
     return Result;
 }
 
@@ -281,7 +164,7 @@ int IsKoreanIMEUsingIMM32( HWND hWnd )
     if( hIMC )
         ImmReleaseContext( hWnd, hIMC );
 
-    PrintDebugString( Format( L"%s : Result = %d", __FUNCTIONW__, Result ) );
+    //PrintDebugString( Format( L"%s : Result = %d", __FUNCTIONW__, Result ) );
     return Result;
 }
 
@@ -315,6 +198,7 @@ int IsKoreanIMEUsingKeyboardLayout( HWND hWnd )
 bool IsKoreanModeInIME()
 {
     bool IsIMEMode = false;
+    static const auto StSettings = GetSettings();
 
     do
     {
@@ -329,6 +213,9 @@ bool IsKoreanModeInIME()
 
         int Result = -1;
 
+        const auto IsAttachThreadUI = StSettings->value( OPTION_DETECT_ATTACH_THREAD_INPUT, OPTION_DETECT_ATTACH_THREAD_INPUT_DEFAULT ).toBool() ||
+                                      StSettings->value( OPTION_NOTIFY_SHOW_CARET, OPTION_NOTIFY_SHOW_CARET_DEFAULT ).toBool();
+
         Result = IsKoreanIMEUsingTSF();
 
         if( Result == TRUE )
@@ -340,26 +227,48 @@ bool IsKoreanModeInIME()
         if( Result >= 0 )
             break;
 
-        const HWND hWnd = GetForegroundWindow();
+        HWND hWnd = GetForegroundWindow();
+        const auto TargetThreadId = GetWindowThreadProcessId( hWnd, nullptr );
+        const auto CurrentThreadId = GetCurrentThreadId();
+        bool IsAttached = false;
 
-        Result = IsKoreanIMEUsingIMM32( hWnd );
-        if( Result == TRUE )
-            IsIMEMode = true;
-        if( Result == FALSE )
-            IsIMEMode = false;
-        if( Result >= 0 )
-            IsKoreanModeOnHook = IsIMEMode;
-        if( Result >= 0 )
-            break;
+        if( IsAttachThreadUI == true && CurrentThreadId == TargetThreadId )
+            IsAttached = AttachThreadInput( CurrentThreadId, TargetThreadId, FALSE );
 
-        Result = IsKoreanIMEUsingKeyboardLayout( hWnd );
+        do
+        {
+            // MS TEAMS 등 몇몇 앱은 IME 메시지를 처리하는 창이 전경 창이 아니라 내부의 다른 창이므로 실제 포커스 된 창을 가져온다.
+            GUITHREADINFO guiInfo = { 0 };
+            guiInfo.cbSize        = sizeof( GUITHREADINFO );
+            if( GetGUIThreadInfo( TargetThreadId, &guiInfo ) == TRUE )
+            {
+                if( guiInfo.hwndFocus != nullptr )
+                    hWnd = guiInfo.hwndFocus;
+            }
 
-        if( Result == TRUE )
-            IsIMEMode = true;
-        if( Result == FALSE )
-            IsIMEMode = false;
-        if( Result >= 0 )
-            IsKoreanModeOnHook = IsIMEMode;
+            Result = IsKoreanIMEUsingIMM32( hWnd );
+            if( Result == TRUE )
+                IsIMEMode = true;
+            if( Result == FALSE )
+                IsIMEMode = false;
+            if( Result >= 0 )
+                IsKoreanModeOnHook = IsIMEMode;
+            if( Result >= 0 )
+                break;
+
+            Result = IsKoreanIMEUsingKeyboardLayout( hWnd );
+
+            if( Result == TRUE )
+                IsIMEMode = true;
+            if( Result == FALSE )
+                IsIMEMode = false;
+            if( Result >= 0 )
+                IsKoreanModeOnHook = IsIMEMode;
+
+        } while( false );
+
+        if( IsAttachThreadUI == true && IsAttached == true )
+            AttachThreadInput( CurrentThreadId, TargetThreadId, FALSE );
 
         // 어떤 것도 성공하지 못하면 키보드 훅 기반의 값을 반환
         IsIMEMode = IsKoreanModeOnHook;
@@ -369,96 +278,6 @@ bool IsKoreanModeInIME()
     return IsIMEMode;
 }
 
-// //void UpdateIndicatorPosition()
-// //{
-// //    if( INDICATOR_HWND == nullptr )
-// //        return;
-// //
-// //    CURSORINFO ci = {0,};
-// //    ci.cbSize = sizeof( ci );
-// //    GetCursorInfo( &ci );
-// //    const auto CursorSize = GetCursorSize( ci.hCursor );
-// //
-// //    // 화면 경계 확인
-// //    int screenWidth = GetSystemMetrics( SM_CXSCREEN );
-// //    int screenHeight = GetSystemMetrics( SM_CYSCREEN );
-// //
-// //    int x = ci.ptScreenPos.x + CursorSize.cx + OFFSET_X;
-// //    int y = ci.ptScreenPos.y + CursorSize.cy + OFFSET_Y;
-// //
-// //    // 화면 밖으로 나가지 않도록
-// //    if( x + INDICATOR_SIZE > screenWidth )
-// //        x = ci.ptScreenPos.x - OFFSET_X - INDICATOR_SIZE;
-// //
-// //    if( y + INDICATOR_SIZE > screenHeight )
-// //        y = ci.ptScreenPos.y - OFFSET_Y - INDICATOR_SIZE;
-// //
-// //    SetWindowPos( INDICATOR_HWND, HWND_TOPMOST, x, y, 0, 0,
-// //                  SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW );
-// //}
-// //
-// //SIZE GetCursorSize( HCURSOR Cursor )
-// //{
-// //    SIZE res = { 0 };
-// //    if( Cursor )
-// //    {
-// //        ICONINFO info = { 0 };
-// //        if( ::GetIconInfo( Cursor, &info ) != 0 )
-// //        {
-// //            bool bBWCursor = ( info.hbmColor == NULL );
-// //            BITMAP bmpinfo = { 0 };
-// //            if( ::GetObject( info.hbmMask, sizeof( BITMAP ), &bmpinfo ) != 0 )
-// //            {
-// //                res.cx = bmpinfo.bmWidth;
-// //                res.cy = abs( bmpinfo.bmHeight ) / ( bBWCursor ? 2 : 1 );
-// //            }
-// //
-// //            ::DeleteObject( info.hbmColor );
-// //            ::DeleteObject( info.hbmMask );
-// //        }
-// //    }
-// //    return res;
-// //}
-// //
-// //void DrawIndicator( HDC hdc, bool IsKoreanMode )
-// //{
-// //    Graphics graphics( hdc );
-// //    graphics.SetSmoothingMode( SmoothingModeAntiAlias );
-// //    graphics.SetTextRenderingHint( TextRenderingHintAntiAlias );
-// //
-// //    // 배경색 설정
-// //    Color bgColor = IsKoreanMode ? Color(220, 255, 100, 100) : Color(220, 100, 100, 255);
-// //    Color textColor = Color(255, 255, 255, 255);
-// //
-// //    // 그림자
-// //    SolidBrush shadowBrush(Color(80, 0, 0, 0));
-// //    graphics.FillEllipse(&shadowBrush, 3, 3, INDICATOR_SIZE - 4, INDICATOR_SIZE - 4);
-// //
-// //    // 배경 원
-// //    LinearGradientBrush gradientBrush(
-// //     Point(0, 0), Point(INDICATOR_SIZE, INDICATOR_SIZE),
-// //     bgColor,
-// //     Color(200, bgColor.GetR() - 30, bgColor.GetG() - 30, bgColor.GetB() - 30)
-// //    );
-// //    graphics.FillEllipse(&gradientBrush, 1, 1, INDICATOR_SIZE - 2, INDICATOR_SIZE - 2);
-// //
-// //    // 테두리
-// //    Pen borderPen(Color(255, 255, 255, 255), 1.5f);
-// //    graphics.DrawEllipse(&borderPen, 1, 1, INDICATOR_SIZE - 2, INDICATOR_SIZE - 2);
-// //
-// //    // 텍스트
-// //    FontFamily fontFamily(L"맑은 고딕");
-// //    Font font(&fontFamily, 10, FontStyleBold, UnitPixel);
-// //    SolidBrush textBrush(textColor);
-// //
-// //    StringFormat stringFormat;
-// //    stringFormat.SetAlignment(StringAlignmentCenter);
-// //    stringFormat.SetLineAlignment(StringAlignmentCenter);
-// //
-// //    RectF rect(0.0f, 0.0f, (REAL)INDICATOR_SIZE, (REAL)INDICATOR_SIZE);
-// //    graphics.DrawString( IsKoreanMode ? L"가" : L"A", -1, &font, rect, &stringFormat, &textBrush);
-// //}
-
 CIMECursorApp::CIMECursorApp( int& argc, char* argv[] )
     : QApplication( argc, argv )
 {
@@ -466,6 +285,8 @@ CIMECursorApp::CIMECursorApp( int& argc, char* argv[] )
     m_pTrayIcon = new QSystemTrayIcon( this );
     m_pOverlay = new QWndBorderOverlay;
     m_pUiOpt = new UiOpt;
+    m_pUiIndicator = new UiIndicator;
+    m_pUiIndicatorCaret = new UiIndicator_Caret;
 
     QMetaObject::invokeMethod( this, "Initialize", Qt::QueuedConnection );
 }
@@ -488,23 +309,16 @@ void CIMECursorApp::Initialize()
 
     do
     {
-        std::string f = R"(C:\Users\jgh0721\AppData\Local\Autodesk\AutoCAD 2025\R25.0\enu\Template\Drawing1 ISO A1 Layout)";
-        const auto r = ( QVector<QString>() << QString() << "" << "fdsfds" << "" << QString() ).join("|");
+        IF_FAILED_BREAK_TO_DEBUG( Hr, InitializeTSF(), L"TSF 서비스 초기화 실패 : 0x%08x", Hr );
 
-        const auto rr = r.split( "|", Qt::KeepEmptyParts );
-        const auto rrr = r.split( "|", Qt::SkipEmptyParts );
-
-
-        // IF_FAILED_BREAK_TO_DEBUG( Hr, InitializeTSF(), L"TSF 서비스 초기화 실패 : 0x%08x", Hr );
-
-        MouseHook = SetWindowsHookExW( WH_MOUSE_LL, LowLevelMouseProc, hInstance, 0 );
-        KeyboardHook = SetWindowsHookExW( WH_KEYBOARD_LL, LowLevelKeyboardProc, hInstance, 0 );
-
-        if( MouseHook == nullptr || KeyboardHook == nullptr )
-        {
-            PrintDebugString( Format( L"키보드 마우스 훅 설치 실패 : %d", ::GetLastError() ) );
-            break;
-        }
+        // MouseHook = SetWindowsHookExW( WH_MOUSE_LL, LowLevelMouseProc, hInstance, 0 );
+        // KeyboardHook = SetWindowsHookExW( WH_KEYBOARD_LL, LowLevelKeyboardProc, hInstance, 0 );
+        //
+        // if( MouseHook == nullptr || KeyboardHook == nullptr )
+        // {
+        //     PrintDebugString( Format( L"키보드 마우스 훅 설치 실패 : %d", ::GetLastError() ) );
+        //     break;
+        // }
 
         updateIMEStatus();
 
@@ -590,8 +404,7 @@ void CIMECursorApp::CloseTSF()
 
 void CIMECursorApp::updateIMEStatus()
 {
-    PrintDebugString( Format( L"%s", __FUNCTIONW__ ) );
-
+    const auto StSettings = GetSettings();
     const bool IsIMEMode = IsKoreanModeInIME();
 
     if( IsIMEMode == IsKoreanMode )
@@ -600,36 +413,47 @@ void CIMECursorApp::updateIMEStatus()
     IsKoreanMode = IsIMEMode;
     PrintDebugString( Format( L"IME 상태 : %s", IsIMEMode ? L"한글" : L"영문" ) );
 
-    // if( INDICATOR_HWND )
-    // {
-    //     InvalidateRect( INDICATOR_HWND, nullptr, TRUE );
-    //     UpdateWindow( INDICATOR_HWND ); // Send WM_PAINT
-    // }
+    m_pUiIndicatorCaret->SetIMEMode( IsKoreanMode );
+    m_pUiIndicatorCaret->Show();
 
-    if( m_pTrayIcon != nullptr &&
-        m_pTrayIcon->isVisible() )
+    if( StSettings->value( OPTION_NOTIFY_SHOW_CARET, OPTION_NOTIFY_SHOW_CARET_DEFAULT ).toBool() == true || true )
     {
-        if( IsKoreanMode )
-            m_pTrayIcon->setIcon( QIcon( KOREAN_MODE_ICON ) );
-        else
-            m_pTrayIcon->setIcon( QIcon( ENGLISH_MODE_ICON ) );
-
-        m_pTrayIcon->setToolTip( QString( "IME 상태 : %1" ).arg( IsKoreanMode ? tr("한글") : tr("영문") ) );
-        m_pTrayIcon->show();
     }
 
-    // if( NotificationIcon.cbSize > 0 )
-    // {
-    //     swprintf_s( NotificationIcon.szTip, L"IME 상태: %s", IsIMEMode ? L"한글" : L"영문" );
-    //     Shell_NotifyIconW( NIM_MODIFY, &NotificationIcon );
-    // }
+    if( StSettings->value( OPTION_NOTIFY_SHOW_POPUP, OPTION_NOTIFY_SHOW_POPUP_DEFAULT ).toBool() == true )
+    {
+        m_pUiIndicator->SetIMEMode( IsKoreanMode );
+        m_pUiIndicator->Show();
+    }
+
+    if( StSettings->value( OPTION_NOTIFY_SHOW_NOTIFICATION_ICON, OPTION_NOTIFY_SHOW_NOTIFICATION_ICON_DEFAULT ).toBool() == true )
+    {
+        if( m_pTrayIcon != nullptr &&
+            m_pTrayIcon->isVisible() )
+        {
+            if( IsKoreanMode )
+                m_pTrayIcon->setIcon( QIcon( KOREAN_MODE_ICON ) );
+            else
+                m_pTrayIcon->setIcon( QIcon( ENGLISH_MODE_ICON ) );
+
+            m_pTrayIcon->setToolTip( QString( "IME 상태 : %1" ).arg( IsKoreanMode ? tr("한글") : tr("영문") ) );
+            m_pTrayIcon->show();
+        }
+    }
 }
 
 LRESULT CIMECursorApp::LowLevelMouseProc( int nCode, WPARAM wParam, LPARAM lParam )
 {
-    //    if( nCode >= 0 && wParam == WM_MOUSEMOVE )
-    //        UpdateIndicatorPosition();
-    //
+    static const auto StSettings = GetSettings();
+
+    if( nCode >= 0 && wParam == WM_MOUSEMOVE )
+    {
+        if( StSettings->value( OPTION_NOTIFY_SHOW_CURSOR, OPTION_NOTIFY_SHOW_CURSOR ).toBool() == true )
+        {
+            // UpdateIndicatorPosition();
+        }
+    }
+
     return CallNextHookEx( MouseHook, nCode, wParam, lParam );
 }
 

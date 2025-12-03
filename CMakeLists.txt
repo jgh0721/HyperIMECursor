@@ -12,7 +12,7 @@ set(CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION "${WINDOWS_SDK_VERSION}" CACHE STRI
 set(ENV{WindowsSDKVersion} "${WINDOWS_SDK_VERSION}\\")
 set(ENV{WindowsSDKLibVersion} "${WINDOWS_SDK_VERSION}\\")
 
-project(HyperIMECursor LANGUAGES C CXX )
+project(HyperIMECursor LANGUAGES C CXX VERSION 0.0.0.1)
  
 # C++ 표준 설정
 set(CMAKE_CXX_STANDARD 20)
@@ -44,6 +44,8 @@ SET(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/Install CACHE PATH "Installation pa
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Gui Widgets)
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
 
+configure_file( src/version.rc.in src/version.rc @ONLY )
+
 set( FORMS
         src/ui/about.ui
         src/ui/opt.ui
@@ -52,6 +54,8 @@ set( FORMS
         src/ui/indicator.ui
         src/ui/indicator.cpp
         src/ui/indicator.hpp
+        src/ui/indicator_caret.cpp
+        src/ui/indicator_caret.hpp
 )
 set( SOURCES
         src/cmnUtils.cpp
@@ -68,6 +72,7 @@ set( SOURCES
         src/settings.hpp
 )
  set( RESOURCES
+      src/version.rc
          #    src/resource.h
  )
 

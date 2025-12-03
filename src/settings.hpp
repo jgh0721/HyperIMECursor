@@ -17,6 +17,8 @@
 #define OPTION_NOTIFY_SHOW_CARET_DEFAULT                false
 #define OPTION_NOTIFY_SHOW_POPUP                        OPTION_NOTIFY_GROUP "/OnPopup"
 #define OPTION_NOTIFY_SHOW_POPUP_DEFAULT                true
+#define OPTION_NOTIFY_SHOW_BORDER                       OPTION_NOTIFY_GROUP "/OnBorder"
+#define OPTION_NOTIFY_SHOW_BORDER_DEFAULT               false
 #define OPTION_NOTIFY_SHOW_NOTIFICATION_ICON            OPTION_NOTIFY_GROUP "/ByNotificationIcon"
 #define OPTION_NOTIFY_SHOW_NOTIFICATION_ICON_DEFAULT    false
 

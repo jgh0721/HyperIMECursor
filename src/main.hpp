@@ -10,6 +10,7 @@ const auto ENGLISH_MODE_ICON = ":/res/english_icon.ico";
 
 class UiOpt;
 class UiIndicator;
+class UiIndicator_Caret;
 class QWndBorderOverlay;
 
 class CIMECursorApp : public QApplication
@@ -29,8 +30,6 @@ protected:
     Q_INVOKABLE void                    updateIMEStatus();
 
 private:
-    LRESULT CALLBACK                    MainWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
-    LRESULT CALLBACK                    HookWndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
     static LRESULT CALLBACK             LowLevelMouseProc( int nCode, WPARAM wParam, LPARAM lParam );
     static LRESULT CALLBACK             LowLevelKeyboardProc( int nCode, WPARAM wParam, LPARAM lParam );
 
@@ -40,15 +39,10 @@ private:
 
     QPointer<UiOpt>                     m_pUiOpt = nullptr;
     QPointer<UiIndicator>               m_pUiIndicator = nullptr;
+    QPointer<UiIndicator_Caret>         m_pUiIndicatorCaret = nullptr;
 };
 
 bool                                    IsProcessInAppContainor( HWND hWnd );
-
-// bool                                    CreateMainWnd( HINSTANCE hInstance );
-// bool                                    CreateIndicatorWnd( HINSTANCE hInstance, HWND& hWnd );
-// void                                    CreateNotificationIcon( HWND hWnd );
-// void                                    DestroyNotificationIcon();
-
 
 /*!
  * TSF 서비스를 이용하여 현재 입력기의 입력 모드 반환

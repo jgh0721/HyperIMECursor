@@ -1,0 +1,36 @@
+#include <windows.h>
+#include <winver.h>
+
+#define STR(x)                          STR_(x)
+#define STR_(x)                         #x
+
+#include "resource.h"
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION 1,0,0,0
+PRODUCTVERSION 1,0,0,0
+FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
+FILEFLAGS 0
+FILEOS VOS__WINDOWS32
+FILETYPE VFT_APP
+FILESUBTYPE 0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "041204E4" // 언어/코드페이지 (한국어/UTF-8)
+        BEGIN
+            VALUE "CompanyName", "My House"
+            VALUE "FileDescription", "HyperIMEIndicator"
+            VALUE "FileVersion", "0.0.0.0"
+            VALUE "InternalName", "HyperIMEIndicator"
+            VALUE "OriginalFilename", "HyperIMEIndicator.exe"
+            VALUE "ProductName", "HyperIMEIndicator"
+            VALUE "ProductVersion", "0.0.0.0"
+        END
+    END
+
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0412, 0x04E4
+    END
+END
