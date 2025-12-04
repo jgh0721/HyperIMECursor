@@ -12,7 +12,7 @@ set(CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION "${WINDOWS_SDK_VERSION}" CACHE STRI
 set(ENV{WindowsSDKVersion} "${WINDOWS_SDK_VERSION}\\")
 set(ENV{WindowsSDKLibVersion} "${WINDOWS_SDK_VERSION}\\")
 
-project(HyperIMECursor LANGUAGES C CXX VERSION 0.0.0.1)
+project(HyperIMEIndicator LANGUAGES C CXX VERSION 0.0.0.1)
  
 # C++ 표준 설정
 set(CMAKE_CXX_STANDARD 20)
@@ -56,6 +56,8 @@ set( FORMS
         src/ui/indicator.hpp
         src/ui/indicator_caret.cpp
         src/ui/indicator_caret.hpp
+        src/ui/about.cpp
+        src/ui/about.hpp
 )
 set( SOURCES
         src/cmnUtils.cpp
@@ -70,35 +72,53 @@ set( SOURCES
         src/imewindowindicator.hpp
         src/settings.cpp
         src/settings.hpp
+        src/app.cpp
+        src/app.hpp
 )
  set( RESOURCES
       src/version.rc
-         #    src/resource.h
+      src/resource.h
  )
 
 # 실행 파일 생성
+set(APP_MANIFEST "${CMAKE_CURRENT_SOURCE_DIR}/src/res/app.manifest")
 qt_standard_project_setup()
-qt6_add_executable(HyperIMECursor ${SOURCES} ${FORMS} ${RESOURCES} )
+qt6_add_executable(HyperIMEIndicator ${SOURCES} ${FORMS} ${RESOURCES} ${APP_MANIFEST})
 
-target_include_directories(HyperIMECursor PRIVATE AFTER ${CMAKE_CURRENT_SOURCE_DIR}/src)
-target_precompile_headers(HyperIMECursor PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${CMAKE_CURRENT_SOURCE_DIR}/src/stdafx.h>")
-target_link_libraries(HyperIMECursor PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets)
-set_target_properties(HyperIMECursor PROPERTIES WIN32_EXECUTABLE ON)
+target_include_directories(HyperIMEIndicator PRIVATE AFTER ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_precompile_headers(HyperIMEIndicator PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${CMAKE_CURRENT_SOURCE_DIR}/src/stdafx.h>")
+target_link_libraries(HyperIMEIndicator PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets)
+set_target_properties(HyperIMEIndicator PROPERTIES WIN32_EXECUTABLE ON)
+# set_target_properties(HyperIMEIndicator PROPERTIES LINK_FLAGS "/MANIFEST:embed /MANIFESTINPUT:\"${APP_MANIFEST}\"")
+
+if (MSVC)
+    set_target_properties(HyperIMEIndicator PROPERTIES
+            LINK_FLAGS "/MANIFEST:NO"
+    )
+
+    add_custom_command(TARGET HyperIMEIndicator POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/res/app.manifest"
+            "$<TARGET_FILE_DIR:HyperIMEIndicator>/app.manifest"
+            COMMAND mt.exe -manifest "$<TARGET_FILE_DIR:HyperIMEIndicator>/app.manifest"
+            -outputresource:"$<TARGET_FILE:HyperIMEIndicator>";#1
+    )
+endif()
 
 ## 링크 라이브러리
-#target_link_libraries(HyperIMECursor
+#target_link_libraries(HyperIMEIndicator
 #PUBLIC
 #    gdiplus
 #    imm32
 #    comctl32
 #)
 #
-#set_property(TARGET HyperIMECursor PROPERTY
+#set_property(TARGET HyperIMEIndicator PROPERTY
 #        MSVC_DEBUG_INFORMATION_FORMAT "$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>")
-## set_property(TARGET HyperIMECursor PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+## set_property(TARGET HyperIMEIndicator PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 #
 ## On Windows, copy the Slint DLL next to the application binary so that it's found.
 #if (WIN32)
-#    add_custom_command(TARGET HyperIMECursor POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:HyperIMECursor> $<TARGET_FILE_DIR:HyperIMECursor> COMMAND_EXPAND_LISTS)
+#    add_custom_command(TARGET HyperIMEIndicator POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:HyperIMEIndicator> $<TARGET_FILE_DIR:HyperIMEIndicator> COMMAND_EXPAND_LISTS)
 #endif()
 #

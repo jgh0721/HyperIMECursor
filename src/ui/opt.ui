@@ -6,68 +6,454 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>307</width>
-    <height>230</height>
+    <width>479</width>
+    <height>348</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <family>Sarasa Mono K</family>
+    <pointsize>10</pointsize>
+    <stylestrategy>PreferAntialias</stylestrategy>
+    <hintingpreference>PreferFullHinting</hintingpreference>
+   </font>
+  </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>옵션</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>IME 상태 획득 방법</string>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="font">
+      <font>
+       <family>Sarasa Mono K</family>
+       <pointsize>10</pointsize>
+       <stylestrategy>PreferAntialias</stylestrategy>
+       <hintingpreference>PreferFullHinting</hintingpreference>
+      </font>
      </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <widget class="QRadioButton" name="rdoDetectMethod_A">
-        <property name="text">
-         <string>AttachThreadInput : 빠름, 데드락 위험</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QRadioButton" name="rdoDetectMethod_B">
-        <property name="text">
-         <string>SendMessage : 느림, 안정적</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+     <property name="styleSheet">
+      <string notr="true">
+QTabBar::tab
+{
+  font-size: 13px;
+}
+</string>
+     </property>
+     <property name="tabPosition">
+      <enum>QTabWidget::TabPosition::North</enum>
+     </property>
+     <property name="tabShape">
+      <enum>QTabWidget::TabShape::Rounded</enum>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <property name="documentMode">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="tabEngine">
+      <attribute name="title">
+       <string>엔진</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="font">
+          <font>
+           <family>Sarasa Mono K</family>
+           <pointsize>10</pointsize>
+           <stylestrategy>PreferAntialias</stylestrategy>
+           <hintingpreference>PreferFullHinting</hintingpreference>
+          </font>
+         </property>
+         <property name="title">
+          <string>IME 상태 획득 방법</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="rdoIME_Attach">
+            <property name="font">
+             <font>
+              <family>Sarasa Mono K</family>
+              <pointsize>10</pointsize>
+              <stylestrategy>PreferAntialias</stylestrategy>
+              <hintingpreference>PreferFullHinting</hintingpreference>
+             </font>
+            </property>
+            <property name="text">
+             <string>AttachThreadInput, 빠름, 응답없음 위험</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QRadioButton" name="rdoIME_SendMessage">
+            <property name="font">
+             <font>
+              <family>Sarasa Mono K</family>
+              <pointsize>10</pointsize>
+              <stylestrategy>PreferAntialias</stylestrategy>
+              <hintingpreference>PreferFullHinting</hintingpreference>
+             </font>
+            </property>
+            <property name="text">
+             <string>SendMessage, 느림, 안정적</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QCheckBox" name="chkIME_KeyboardHook">
+            <property name="font">
+             <font>
+              <family>Sarasa Mono K</family>
+              <pointsize>10</pointsize>
+              <stylestrategy>PreferAntialias</stylestrategy>
+              <hintingpreference>PreferFullHinting</hintingpreference>
+             </font>
+            </property>
+            <property name="text">
+             <string>키보드 후킹 병용( 즉시 상태 체크 )</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" rowspan="2">
+           <widget class="QFrame" name="frmIMEPolling">
+            <property name="styleSheet">
+             <string notr="true">QFrame#frmIMEPolling 
+{ 
+	border: 1px solid gray; 
+	border-radius: 8px;
+}</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_2">
+             <item>
+              <widget class="QLabel" name="label">
+               <property name="font">
+                <font>
+                 <family>Sarasa Mono K</family>
+                 <pointsize>10</pointsize>
+                 <stylestrategy>PreferAntialias</stylestrategy>
+                 <hintingpreference>PreferFullHinting</hintingpreference>
+                </font>
+               </property>
+               <property name="text">
+                <string>상태 확인 주기(ms)</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="spbIMEPollingMs">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>26</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Sarasa Mono K</family>
+                 <pointsize>10</pointsize>
+                 <stylestrategy>PreferAntialias</stylestrategy>
+                 <hintingpreference>PreferFullHinting</hintingpreference>
+                </font>
+               </property>
+               <property name="maximum">
+                <number>9999</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="font">
+          <font>
+           <family>Sarasa Mono K</family>
+           <pointsize>10</pointsize>
+           <stylestrategy>PreferAntialias</stylestrategy>
+           <hintingpreference>PreferFullHinting</hintingpreference>
+          </font>
+         </property>
+         <property name="title">
+          <string>자동 시작</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QCheckBox" name="chkIsRunOnStartup">
+            <property name="font">
+             <font>
+              <family>Sarasa Mono K</family>
+              <pointsize>10</pointsize>
+              <stylestrategy>PreferAntialias</stylestrategy>
+              <hintingpreference>PreferFullHinting</hintingpreference>
+             </font>
+            </property>
+            <property name="text">
+             <string>윈도 시작할 때 자동 실행</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="chkIsRunAsAdminOnStartup">
+            <property name="font">
+             <font>
+              <family>맑은 고딕</family>
+              <pointsize>10</pointsize>
+              <stylestrategy>PreferAntialias</stylestrategy>
+              <hintingpreference>PreferFullHinting</hintingpreference>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">padding-left: 20px;</string>
+            </property>
+            <property name="text">
+             <string>관리자 권한으로 자동 실행</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Orientation::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabCaret">
+      <attribute name="title">
+       <string>캐럿</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QCheckBox" name="chkIsCaret">
+         <property name="font">
+          <font>
+           <family>Sarasa Mono K</family>
+           <pointsize>10</pointsize>
+           <stylestrategy>PreferAntialias</stylestrategy>
+           <hintingpreference>PreferFullHinting</hintingpreference>
+          </font>
+         </property>
+         <property name="text">
+          <string>사용</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QCheckBox" name="chkIsCaretIME">
+         <property name="font">
+          <font>
+           <family>Sarasa Mono K</family>
+           <pointsize>10</pointsize>
+           <stylestrategy>PreferAntialias</stylestrategy>
+           <hintingpreference>PreferFullHinting</hintingpreference>
+          </font>
+         </property>
+         <property name="text">
+          <string>IME 상태</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QCheckBox" name="chkIsCaretNumlock">
+         <property name="font">
+          <font>
+           <family>Sarasa Mono K</family>
+           <pointsize>10</pointsize>
+           <stylestrategy>PreferAntialias</stylestrategy>
+           <hintingpreference>PreferFullHinting</hintingpreference>
+          </font>
+         </property>
+         <property name="text">
+          <string>NumLock 상태</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="2">
+        <widget class="QGroupBox" name="groupBox_3">
+         <property name="font">
+          <font>
+           <family>Sarasa Mono K</family>
+           <pointsize>10</pointsize>
+           <stylestrategy>PreferAntialias</stylestrategy>
+           <hintingpreference>PreferFullHinting</hintingpreference>
+          </font>
+         </property>
+         <property name="title">
+          <string>스타일시트</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <property name="leftMargin">
+           <number>6</number>
+          </property>
+          <property name="topMargin">
+           <number>3</number>
+          </property>
+          <property name="rightMargin">
+           <number>6</number>
+          </property>
+          <property name="bottomMargin">
+           <number>3</number>
+          </property>
+          <item>
+           <widget class="QPlainTextEdit" name="edtCaretStyleSheet">
+            <property name="font">
+             <font>
+              <family>Sarasa Mono K</family>
+              <pointsize>10</pointsize>
+              <stylestrategy>PreferAntialias</stylestrategy>
+              <hintingpreference>PreferFullHinting</hintingpreference>
+             </font>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="0" column="1" rowspan="3">
+        <widget class="QFrame" name="frmCaretPolling">
+         <property name="styleSheet">
+          <string notr="true">QFrame#frmCaretPolling
+{ 
+	border: 1px solid gray; 
+	border-radius: 8px;
+}</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_6">
+          <item>
+           <widget class="QLabel" name="label_2">
+            <property name="font">
+             <font>
+              <family>Sarasa Mono K</family>
+              <pointsize>10</pointsize>
+              <stylestrategy>PreferAntialias</stylestrategy>
+              <hintingpreference>PreferFullHinting</hintingpreference>
+             </font>
+            </property>
+            <property name="text">
+             <string>캐럿 위치 추적 주기(ms)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spbCaretPollingMs">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>26</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Sarasa Mono K</family>
+              <pointsize>10</pointsize>
+              <stylestrategy>PreferAntialias</stylestrategy>
+              <hintingpreference>PreferFullHinting</hintingpreference>
+             </font>
+            </property>
+            <property name="maximum">
+             <number>9999</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_2">
-     <property name="title">
-      <string>IME 상태 알림 방법</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_2">
-      <item row="2" column="0">
-       <widget class="QCheckBox" name="chkNotifyMethod_Cursor">
+    <widget class="QWidget" name="widget_2" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Orientation::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnOK">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>40</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>Sarasa Mono K</family>
+          <pointsize>10</pointsize>
+          <stylestrategy>PreferAntialias</stylestrategy>
+          <hintingpreference>PreferFullHinting</hintingpreference>
+         </font>
+        </property>
         <property name="text">
-         <string>마우스 커서</string>
+         <string>확인(&amp;O)</string>
+        </property>
+        <property name="autoDefault">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QCheckBox" name="chkNotifyMethod_NotificationIcon">
-        <property name="text">
-         <string>통지영역 아이콘</string>
+      <item>
+       <widget class="QPushButton" name="btnCancel">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>40</height>
+         </size>
         </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QCheckBox" name="chkNotifyMethod_Popup">
         <property name="text">
-         <string>미니 팝업</string>
+         <string>취소(&amp;C)</string>
         </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QCheckBox" name="chkNotifyMethod_Caret">
-        <property name="text">
-         <string>텍스트 캐럿</string>
+        <property name="autoDefault">
+         <bool>false</bool>
+        </property>
+        <property name="default">
+         <bool>true</bool>
         </property>
        </widget>
       </item>

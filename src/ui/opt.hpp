@@ -21,8 +21,9 @@ public:
 Q_SIGNALS:
     void                                settingsChanged();
 
-protected:
-    void                                closeEvent( QCloseEvent* Event ) override;
+protected Q_SLOTS:
+    void                                on_btnOK_clicked( bool checked = false );
+    void                                on_btnCancel_clicked( bool checked = false );
 
 private:
     Ui::dlgOpt                          Ui;

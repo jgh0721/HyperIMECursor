@@ -8,40 +8,6 @@
 const auto KOREAN_MODE_ICON = ":/res/korean_icon.ico";
 const auto ENGLISH_MODE_ICON = ":/res/english_icon.ico";
 
-class UiOpt;
-class UiIndicator;
-class UiIndicator_Caret;
-class QWndBorderOverlay;
-
-class CIMECursorApp : public QApplication
-{
-    Q_OBJECT
-public:
-    CIMECursorApp( int& argc, char* argv[] );
-    ~CIMECursorApp() override;
-
-    Q_INVOKABLE void                    Initialize();
-
-    HRESULT                             InitializeTSF();
-    void                                CloseTSF();
-
-protected:
-
-    Q_INVOKABLE void                    updateIMEStatus();
-
-private:
-    static LRESULT CALLBACK             LowLevelMouseProc( int nCode, WPARAM wParam, LPARAM lParam );
-    static LRESULT CALLBACK             LowLevelKeyboardProc( int nCode, WPARAM wParam, LPARAM lParam );
-
-    QTimer*                             m_pTimer = nullptr;
-    QSystemTrayIcon*                    m_pTrayIcon = nullptr;
-    QPointer<QWndBorderOverlay>         m_pOverlay = nullptr;
-
-    QPointer<UiOpt>                     m_pUiOpt = nullptr;
-    QPointer<UiIndicator>               m_pUiIndicator = nullptr;
-    QPointer<UiIndicator_Caret>         m_pUiIndicatorCaret = nullptr;
-};
-
 bool                                    IsProcessInAppContainor( HWND hWnd );
 
 /*!
@@ -49,7 +15,6 @@ bool                                    IsProcessInAppContainor( HWND hWnd );
  * @return 1 = Korean, 0 = English, -1 = Unknown
  * IsKoreanIMELayout
  */
-int                                     IsKoreanIMEUsingTSF();
 int                                     IsKoreanIMEUsingIMM32( HWND hWnd );
 int                                     IsKoreanIMEUsingKeyboardLayout( HWND hWnd );
 
@@ -63,3 +28,4 @@ bool                                    IsKoreanModeInIME();
 // void                                    UpdateIndicatorPosition();
 // SIZE                                    GetCursorSize( HCURSOR Cursor );
 // void                                    DrawIndicator( HDC hdc, bool IsKoreanMode );
+

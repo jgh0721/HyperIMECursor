@@ -2,24 +2,52 @@
 
 #include <QSettings>
 
+extern HINSTANCE            hInstance;
+extern std::atomic<bool>    IsKoreanMode;
+extern std::atomic<bool>    IsKoreanModeOnHook;
+extern uint64_t             IMEActiveCheckTime;
+
 #define SETTINGS_FILE                                   "HyperIMEIndicator.ini"
 
-#define OPTION_DETECT_GROUP                             "DetectGroup"
+#define OPTION_DETECT_GROUP                             "Engine"
 #define OPTION_DETECT_ATTACH_THREAD_INPUT               OPTION_DETECT_GROUP "/AttachThreadInput"
 #define OPTION_DETECT_ATTACH_THREAD_INPUT_DEFAULT       false
 #define OPTION_DETECT_SENDMESSAGE                       OPTION_DETECT_GROUP "/SendMessage"
 #define OPTION_DETECT_SENDMESSAGE_DEFAULT               true
+#define OPTION_DETECT_KEYBOARD_HOOK                     OPTION_DETECT_GROUP "/KeyboardHook"
+#define OPTION_DETECT_KEYBOARD_HOOK_DEFAULT             false
+#define OPTION_DETECT_DETECT_POLLING_MS                 OPTION_DETECT_GROUP "/PollingMs"
+#define OPTION_DETECT_DETECT_POLLING_MS_DEFAULT         1000
 
-#define OPTION_NOTIFY_GROUP                             "NotifyGroup"
-#define OPTION_NOTIFY_SHOW_CURSOR                       OPTION_NOTIFY_GROUP "/OnCursor"
-#define OPTION_NOTIFY_SHOW_CURSOR_DEFAULT               false
-#define OPTION_NOTIFY_SHOW_CARET                        OPTION_NOTIFY_GROUP "/OnCaret"
-#define OPTION_NOTIFY_SHOW_CARET_DEFAULT                false
-#define OPTION_NOTIFY_SHOW_POPUP                        OPTION_NOTIFY_GROUP "/OnPopup"
-#define OPTION_NOTIFY_SHOW_POPUP_DEFAULT                true
-#define OPTION_NOTIFY_SHOW_BORDER                       OPTION_NOTIFY_GROUP "/OnBorder"
-#define OPTION_NOTIFY_SHOW_BORDER_DEFAULT               false
-#define OPTION_NOTIFY_SHOW_NOTIFICATION_ICON            OPTION_NOTIFY_GROUP "/ByNotificationIcon"
-#define OPTION_NOTIFY_SHOW_NOTIFICATION_ICON_DEFAULT    false
+#define OPTION_STARTUP_GROUP                            "AutoStart"
+#define OPTION_STARTUP_START_ON_WINDOWS_BOOT            OPTION_STARTUP_GROUP "/StartOnWindowsBoot"
+#define OPTION_STARTUP_START_ON_WINDOWS_BOOT_DEFAULT    false
+#define OPTION_STARTUP_START_AS_ADMIN_ON_WINDOWS_BOOT   OPTION_STARTUP_GROUP "/StartAsAdminOnWindowsBoot"
+#define OPTION_STARTUP_START_AS_ADMIN_ON_WINDOWS_BOOT_DEFAULT false
+
+#define OPTION_ENGINE_CARET_GROUP                       "EngineCaret"
+#define OPTION_ENGINE_CARET_IS_USE                      OPTION_ENGINE_CARET_GROUP "/Use"
+#define OPTION_ENGINE_CARET_IS_USE_DEFAULT              true
+#define OPTION_ENGINE_CARET_IS_CHECK_IME                OPTION_ENGINE_CARET_GROUP "/CheckIme"
+#define OPTION_ENGINE_CARET_IS_CHECK_IME_DEFAULT        true
+#define OPTION_ENGINE_CARET_IS_CHECK_NUMLOCK            OPTION_ENGINE_CARET_GROUP "/CheckNumlock"
+#define OPTION_ENGINE_CARET_IS_CHECK_NUMLOCK_DEFAULT    false
+#define OPTION_ENGINE_CARET_POLLING_MS                  OPTION_ENGINE_CARET_GROUP "/PollingMs"
+#define OPTION_ENGINE_CARET_POLLING_MS_DEFAULT          100
+#define OPTION_ENGINE_CARET_STYLESHEET                  OPTION_ENGINE_CARET_GROUP "/StyleSheet"
+#define OPTION_ENGINE_CARET_STYLESHEET_DEFAULT          R"(QLabel {
+    background-color: rgba( 0, 0, 0, 180 );
+    color: white;
+    border-radius: 6px;
+    padding-4px;
+    font-weight: semi-bold;
+    font-size: 13px;
+})"
+
+#define GET_VALUE( Value ) \
+    GetSettings()->value( Value, Value##_DEFAULT )
+
+#define SET_VALUE( Key, Value ) \
+    GetSettings()->setValue( Key, Value )
 
 QSettings* GetSettings();

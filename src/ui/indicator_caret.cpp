@@ -4,6 +4,8 @@
 #include <atlbase.h>
 #include <atlsafe.h>
 
+#include "settings.hpp"
+
 #pragma comment( lib, "Oleacc.lib" )
 
 UiIndicator_Caret::UiIndicator_Caret( QWidget* parent )
@@ -24,16 +26,7 @@ UiIndicator_Caret::UiIndicator_Caret( QWidget* parent )
     layout->setContentsMargins( 0, 0, 0, 0 );
 
     m_label = new QLabel( this );
-    m_label->setStyleSheet(
-                           "QLabel { "
-                           "   background-color: rgba(0, 0, 0, 180); "
-                           "   color: white; "
-                           "   border-radius: 4px; "
-                           "   padding: 4px; "
-                           "   font-weight: bold; "
-                           "   font-size: 12px;"
-                           "}"
-                          );
+    m_label->setStyleSheet( OPTION_ENGINE_CARET_STYLESHEET_DEFAULT );
     m_label->adjustSize();
     layout->addWidget( m_label );
 
@@ -55,26 +48,61 @@ UiIndicator_Caret::~UiIndicator_Caret()
 
 void UiIndicator_Caret::SetIMEMode( bool IsKoreanMode )
 {
-    if( IsKoreanMode )
-        m_label->setText( "한" );
-    else
-        m_label->setText( "A" );
+    m_isChanged = m_isCurrentIMEMode != IsKoreanMode;
+    m_isCurrentIMEMode = IsKoreanMode;
+}
+
+void UiIndicator_Caret::SetPollingMs( int Ms )
+{
+    m_timer->stop();
+    m_timer->setInterval( Ms );
+}
+
+void UiIndicator_Caret::SetStyleSheet( const QString& StyleSheet )
+{
+    m_label->setStyleSheet( StyleSheet );
+}
+
+void UiIndicator_Caret::SetCheckIME( bool IsCheck )
+{
+    m_isCheckIME = IsCheck;
+}
+
+void UiIndicator_Caret::SetCheckNumlock( bool IsCheck )
+{
+    m_isCheckNumlock = IsCheck;
 }
 
 void UiIndicator_Caret::Show()
 {
-    m_timer->start( 50 );
+    if( m_timer->isActive() == false )
+        m_timer->start( GET_VALUE( OPTION_ENGINE_CARET_POLLING_MS ).toInt() );
 }
 
 void UiIndicator_Caret::Hide()
 {
     m_timer->stop();
+    hide();
 }
 
 void UiIndicator_Caret::updateStatus()
 {
     static QPoint PrevCaretPos = {};
-    auto          CaretPos     = retrieveCaretPosition();
+    static bool PrevNumLockOn = false;
+
+    auto       CaretPos    = retrieveCaretPosition();
+    const bool IsNumlockOn = ((( SHORT )GetKeyState( VK_NUMLOCK )) & 0x0001) != 0;
+
+    if( PrevNumLockOn != IsNumlockOn )
+    {
+        if( m_isCheckNumlock == true )
+            m_isChanged = true;
+
+        PrevNumLockOn = IsNumlockOn;
+    }
+
+    if( PrevCaretPos == CaretPos && m_isChanged == false )
+        return;
 
     if( PrevCaretPos != CaretPos )
         nsCmn::PrintDebugString( nsCmn::Format( L"Caret Pos = %d|%d", CaretPos.x(), CaretPos.y() ) );
@@ -87,32 +115,62 @@ void UiIndicator_Caret::updateStatus()
         return;
     }
 
-    QScreen* screen = QGuiApplication::screenAt( CaretPos );
+    QScreen* CurScreen = QGuiApplication::screenAt( CaretPos );
 
-    if( !screen )
-    {
-        screen = QGuiApplication::primaryScreen();
-    }
+    if( !CurScreen )
+        CurScreen = QGuiApplication::primaryScreen();
 
-    if( !screen )
+    if( !CurScreen )
     {
         hide();
         return;
     }
 
-    setScreen( screen );
-    const qreal dpr = screen->devicePixelRatio();
+    if( CurScreen != screen() )
+        setScreen( CurScreen );
 
-    // 3. 물리 좌표 -> 논리 좌표 변환
-    // Qt::AA_EnableHighDpiScaling 속성이 켜져있거나 Qt 6라면 나눗셈 필수
-    CaretPos.setX( static_cast< int >( CaretPos.x() / dpr ) );
-    CaretPos.setY( static_cast< int >( CaretPos.y() / dpr ) );
+    // 다중 모니터 간에 캐럿이 이동할 때의 보정 처리, 최초 위젯이 생성된 QScreen 과 다른 스크린에 캐럿이 있을 때의 처리가 필요함.
+    POINT       pt   = { CaretPos.x(), CaretPos.y() };
+    HMONITOR    hMon = MonitorFromPoint( pt, MONITOR_DEFAULTTONEAREST );
+    MONITORINFO mi   = { sizeof( MONITORINFO ) };
 
-    if( parentWidget() )
-        move( parentWidget()->mapFromGlobal( CaretPos ) );
+    QPoint      targetPos;
+    const qreal dpr = screen()->devicePixelRatio();
+
+    if( GetMonitorInfo( hMon, &mi ) )
+    {
+        // 1. 모니터 시작점으로부터의 물리적 오프셋(거리) 계산
+        int physicalOffsetX = CaretPos.x() - mi.rcMonitor.left;
+        int physicalOffsetY = CaretPos.y() - mi.rcMonitor.top;
+
+        // 2. 오프셋만 DPR 적용 (논리 크기로 변환)
+        int logicalOffsetX = static_cast< int >( physicalOffsetX / dpr );
+        int logicalOffsetY = static_cast< int >( physicalOffsetY / dpr );
+
+        // 3. Qt Screen의 논리적 시작점(Geometry TopLeft)에 더함
+        // Qt의 CurScreen->geometry()는 이미 논리 좌표계입니다.
+        targetPos = CurScreen->geometry().topLeft() + QPoint( logicalOffsetX, logicalOffsetY );
+    }
     else
-        move( CaretPos.x(), CaretPos.y() );
+    {
+        // Fallback: 정보 획득 실패 시 단순 변환 (단일 모니터 가정)
+        targetPos = QPoint( static_cast< int >( CaretPos.x() / dpr ), static_cast< int >( CaretPos.y() / dpr ) );
+    }
+
+    move(targetPos);
+
+    m_label->setText( makeStatusText() );
+    m_label->adjustSize();
     show();
+}
+
+QString UiIndicator_Caret::makeStatusText() const
+{
+    const bool IsNumlockOn = ((( SHORT )GetKeyState( VK_NUMLOCK )) & 0x0001) != 0;
+
+    return QString( "%1%2%3" ).arg( m_isCheckIME == true ? m_isCurrentIMEMode ? "한" : "Aa" : "" )
+                              .arg( m_isCheckIME == true && m_isCheckNumlock == true ? "|" : "" )
+                              .arg( m_isCheckNumlock == true ? IsNumlockOn ? "NumOn" : "NumOff" : "" );
 }
 
 QPoint UiIndicator_Caret::retrieveCaretPosition()
@@ -132,8 +190,9 @@ QPoint UiIndicator_Caret::retrieveCaretPosition()
         if( retrievePositionByAccessible( CaretPos, TargetThreadId ) == true )
             break;
 
-        if( retrievePositionByUIA2( CaretPos ) == true )
+        if( retrievePositionByUIA( CaretPos ) == true )
             break;
+
     } while( false );
 
     return CaretPos;
@@ -274,6 +333,7 @@ bool UiIndicator_Caret::retrievePositionByUIA( QPoint& Pt )
             if( FAILED( hr ) )
                 break;
 
+            rects.Destroy();
             hr = pRange->GetBoundingRectangles( rects.GetSafeArrayPtr() );
             if( FAILED( hr ) || rects == nullptr )
                 break;
@@ -294,6 +354,7 @@ bool UiIndicator_Caret::retrievePositionByUIA( QPoint& Pt )
                 if( FAILED( hr ) )
                     break;
 
+                rects.Destroy();
                 hr = pRange->GetBoundingRectangles( rects.GetSafeArrayPtr() );
                 if( FAILED( hr ) || rects == nullptr )
                     break;

@@ -1,0 +1,10 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="HyperIMEIndicator" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="true" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="HyperIMEIndicator" TARGET_NAME="HyperIMEIndicator" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="HyperIMEIndicator" RUN_TARGET_NAME="HyperIMEIndicator">
+    <envs>
+      <env name="PATH" value="D:/Qt/6.10.0/msvc2022_64/bin;$PATH$;" />
+    </envs>
+    <method v="2">
+      <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+    </method>
+  </configuration>
+</component>

@@ -6,12 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>249</width>
+    <height>132</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <family>Sarasa Mono K</family>
+    <pointsize>12</pointsize>
+    <stylestrategy>PreferAntialias</stylestrategy>
+    <hintingpreference>PreferFullHinting</hintingpreference>
+   </font>
+  </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>정보</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -22,62 +30,21 @@
         <property name="font">
          <font>
           <family>Sarasa Mono K</family>
+          <pointsize>12</pointsize>
+          <stylestrategy>PreferAntialias</stylestrategy>
+          <hintingpreference>PreferFullHinting</hintingpreference>
          </font>
         </property>
         <property name="text">
-         <string>TextLabel</string>
+         <string>&lt;font size=&quot;4&quot;&gt;HyperIMEIndicator&lt;/font&gt;
+&lt;br/&gt;
+&lt;font size=&quot;2&quot;&gt;jgh0721@gmail.com&lt;/font&gt;
+</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
         </property>
        </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QWidget" name="widget" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Orientation::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>50</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Sarasa Mono K</family>
-         </font>
-        </property>
-        <property name="text">
-         <string>확인(&amp;O)</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Orientation::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
       </item>
      </layout>
     </widget>
