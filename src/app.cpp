@@ -81,6 +81,13 @@ void CIMECursorApp::Initialize()
         m_notificationMenu->addAction( tr( "종료(&E)" ), [=](){ qApp->quit(); } );
         m_notificationIcon->setIcon( QIcon( ":/res/app_icon.ico" ) );
         m_notificationIcon->setContextMenu( m_notificationMenu );
+        connect( m_notificationIcon, &QSystemTrayIcon::activated, [this]( QSystemTrayIcon::ActivationReason Reason ) {
+            if( Reason == QSystemTrayIcon::DoubleClick )
+            {
+                m_pUiOpt->activateWindow();
+                m_pUiOpt->exec();
+            }
+        });
         m_notificationIcon->show();
 
         updateIMEStatus();
