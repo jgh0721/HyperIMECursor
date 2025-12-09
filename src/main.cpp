@@ -14,7 +14,11 @@ int WINAPI wWinMain( HINSTANCE hCurrInstance, HINSTANCE hPrevInstance, LPWSTR pC
 {
     int Ret = 0;
     CoInitializeEx( 0, COINIT_APARTMENTTHREADED );
+#ifdef _DEBUG
+    HANDLE Guard = ::CreateMutexW( nullptr, TRUE, L"_HyperIMECursor_DEBUG_" );
+#else
     HANDLE Guard = ::CreateMutexW( nullptr, TRUE, L"_HyperIMECursor_" );
+#endif
 
     do
     {

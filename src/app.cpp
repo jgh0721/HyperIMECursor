@@ -1,5 +1,6 @@
 ﻿#include "stdafx.h"
 #include "app.hpp"
+#include "CTaskSchedulerHelper.hpp"
 
 #include "ui/about.hpp"
 #include "ui/indicator.hpp"
@@ -51,21 +52,7 @@ void CIMECursorApp::Initialize()
     {
         StSettings->sync();
 
-        const auto IsLaunchOnBoot = GET_VALUE( OPTION_STARTUP_START_ON_WINDOWS_BOOT ).toBool();
-        const auto IsLaunchOnBootAsAdmin = GET_VALUE( OPTION_STARTUP_START_AS_ADMIN_ON_WINDOWS_BOOT ).toBool();
-
-        if( IsLaunchOnBoot )
-        {
-            // 작업 스케쥴러에 등록
-            if( IsLaunchOnBootAsAdmin )
-            {
-                // 관리자 권한으로 작업 스케쥴러에 등록
-            }
-        }
-        else
-        {
-            // 작업 스케쥴러에 작업이 있다면 해제함
-        }
+        applyAutoStartUP();
 
         m_notificationMenu = new QMenu();
         m_notificationIcon = new QSystemTrayIcon();
@@ -95,7 +82,6 @@ void CIMECursorApp::Initialize()
 
         updateIMEStatus();
 
-
         // m_pOverlay = new QWndBorderOverlay;
 
         const auto IsKeyboardHook = GET_VALUE( OPTION_DETECT_KEYBOARD_HOOK ).toBool();
@@ -119,6 +105,8 @@ void CIMECursorApp::Initialize()
 
 void CIMECursorApp::settingsChanged()
 {
+    applyAutoStartUP();
+
     const auto CurPollingMs = m_pTimer->interval();
     const auto NexPollingMs = GET_VALUE( OPTION_DETECT_DETECT_POLLING_MS ).toInt();
     if( CurPollingMs != NexPollingMs )
@@ -205,4 +193,56 @@ LRESULT CIMECursorApp::LowLevelKeyboardProc( int nCode, WPARAM wParam, LPARAM lP
     } while( false );
 
     return CallNextHookEx( KeyboardHook, nCode, wParam, lParam );
+}
+
+HRESULT CIMECursorApp::applyAutoStartUP()
+{
+    CTaskSchedulerHelper Helper;
+    HRESULT Result = HRESULT_FROM_WIN32( ERROR_INVALID_PARAMETER );
+    const auto IsRunningAsAdmin = nsWin::PrivilegeHelper::IsRunningAsAdmin();
+    const auto IsLaunchOnBoot = GET_VALUE( OPTION_STARTUP_START_ON_WINDOWS_BOOT ).toBool();
+    const auto IsLaunchOnBootAsAdmin = GET_VALUE( OPTION_STARTUP_START_AS_ADMIN_ON_WINDOWS_BOOT ).toBool();
+
+    do
+    {
+        Result = Helper.Initialize();
+        if( FAILED( Result ) )
+            break;
+
+        if( IsLaunchOnBoot )
+        {
+            if( Helper.TaskExists( SETTINGS_TASK_NAME ) == true )
+            {
+                Result = Helper.UnregisterTask( SETTINGS_TASK_NAME );
+                if( FAILED( Result ) )
+                    break;
+            }
+
+            CTaskSchedulerHelper::TaskSettings Task;
+
+            Task.TaskName = SETTINGS_TASK_NAME;
+            Task.Description = L"윈도가 시작될 때 HyperIMEIndicator 를 실행합니다";
+
+            Task.FileFullPath = QDir::toNativeSeparators( QCoreApplication::applicationFilePath() ).toStdWString();
+            Task.Trigger = CTaskSchedulerHelper::TriggerType::Logon;
+            // 관리자 권한으로 작업 스케쥴러에 등록
+            Task.RunLevel = IsLaunchOnBootAsAdmin ? CTaskSchedulerHelper::RunLevel::Highest : CTaskSchedulerHelper::RunLevel::LUA;
+            Task.RunOnlyIfLoggedOn = true;
+            Task.Enabled = true;
+
+            // 작업 스케쥴러에 등록
+            Result = Helper.RegisterTask( Task );
+        }
+        else
+        {
+            // 작업 스케쥴러에 작업이 있다면 해제함
+            if( Helper.TaskExists( SETTINGS_TASK_NAME ) == true )
+                Result = Helper.UnregisterTask( SETTINGS_TASK_NAME );
+            else
+                Result = S_OK;
+        }
+
+    } while( false );
+
+    return Result;
 }

@@ -8,6 +8,11 @@ extern std::atomic<bool>    IsKoreanModeOnHook;
 extern uint64_t             IMEActiveCheckTime;
 
 #define SETTINGS_FILE                                   "HyperIMEIndicator.ini"
+#ifdef _DEBUG
+#define SETTINGS_TASK_NAME                              L"HyperIMEIndicator Launch (DEBUG)"
+#else
+#define SETTINGS_TASK_NAME                              L"HyperIMEIndicator Launch"
+#endif
 
 #define OPTION_DETECT_GROUP                             "Engine"
 #define OPTION_DETECT_ATTACH_THREAD_INPUT               OPTION_DETECT_GROUP "/AttachThreadInput"

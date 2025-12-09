@@ -17,11 +17,11 @@ public:
 protected:
 
     Q_INVOKABLE void                    settingsChanged();
-
     Q_INVOKABLE void                    updateIMEStatus();
 
 private:
     static LRESULT CALLBACK             LowLevelKeyboardProc( int nCode, WPARAM wParam, LPARAM lParam );
+    HRESULT                             applyAutoStartUP();
 
     QMenu*                              m_notificationMenu = nullptr;
     QSystemTrayIcon*                    m_notificationIcon = nullptr;

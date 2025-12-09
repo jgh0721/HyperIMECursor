@@ -12,7 +12,7 @@ set(CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION "${WINDOWS_SDK_VERSION}" CACHE STRI
 set(ENV{WindowsSDKVersion} "${WINDOWS_SDK_VERSION}\\")
 set(ENV{WindowsSDKLibVersion} "${WINDOWS_SDK_VERSION}\\")
 
-project(HyperIMEIndicator LANGUAGES C CXX VERSION 0.0.0.1)
+project(HyperIMEIndicator LANGUAGES C CXX VERSION 0.0.0.2)
  
 # C++ 표준 설정
 set(CMAKE_CXX_STANDARD 20)
@@ -74,6 +74,8 @@ set( SOURCES
         src/settings.hpp
         src/app.cpp
         src/app.hpp
+        src/CTaskSchedulerHelper.cpp
+        src/CTaskSchedulerHelper.hpp
 )
  set( RESOURCES
       src/version.rc
