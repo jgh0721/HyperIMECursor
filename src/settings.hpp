@@ -43,8 +43,9 @@ extern uint64_t             IMEActiveCheckTime;
 #define OPTION_ENGINE_CARET_STYLESHEET_DEFAULT          R"(QLabel {
     background-color: rgba( 0, 0, 0, 180 );
     color: white;
+    border: 1px solid gray;
     border-radius: 6px;
-    padding-4px;
+    padding: 4px;
     font-weight: semi-bold;
     font-size: 13px;
 })"
