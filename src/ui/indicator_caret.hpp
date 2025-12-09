@@ -32,6 +32,7 @@ private:
     bool                                retrievePositionByAccessible( QPoint& Pt, DWORD ThreadId );
     bool                                retrievePositionByUIA( QPoint& Pt );
     bool                                retrievePositionByUIA2( QPoint& Pt );
+    QScreen*                            retrieveQScreenFromHWND( HWND hWnd );
 
     bool                                m_isCheckIME = false;
     bool                                m_isCheckNumlock = false;

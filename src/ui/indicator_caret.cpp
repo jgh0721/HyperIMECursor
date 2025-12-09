@@ -121,7 +121,8 @@ void UiIndicator_Caret::updateStatus()
         return;
     }
 
-    QScreen* CurScreen = QGuiApplication::screenAt( CaretPos );
+    // Ms Teams 등 몇몇 제품에서 특정 경우( 보조 모니터의 전체화면 표시 ) 에 좌표값에 따른 QScreen 을 정확히 인식하지 못하는 문제 수정
+    QScreen* CurScreen = retrieveQScreenFromHWND( GetForegroundWindow() );
 
     if( !CurScreen )
         CurScreen = QGuiApplication::primaryScreen();
@@ -531,4 +532,16 @@ useGetSelection:
     Pt.setX( *pX );
     Pt.setY( *pY + *pH );
     return Pt.x() > 0 || Pt.y() > 0;
+}
+
+QScreen* UiIndicator_Caret::retrieveQScreenFromHWND( HWND hWnd )
+{
+    RECT rect;
+    if( !GetWindowRect( hWnd, &rect ) )
+        return nullptr;
+
+    const int centerX = (rect.left + rect.right) / 2;
+    const int centerY = (rect.top + rect.bottom) / 2;
+
+    return QGuiApplication::screenAt( QPoint( centerX, centerY ) );
 }
