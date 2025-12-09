@@ -219,6 +219,10 @@ bool UiIndicator_Caret::retrievePositionByW32API( QPoint& Pt, DWORD ThreadId )
         if( GuiInfo.rcCaret.right <= 0 && GuiInfo.rcCaret.bottom <= 0 )
             break;
 
+        // 캐럿이 현재 표시되고 있지 않다면 무시
+        if( (GuiInfo.flags & GUI_CARETBLINKING) == 0 )
+            break;
+
         POINT caretPt = { GuiInfo.rcCaret.right, GuiInfo.rcCaret.bottom };
         ClientToScreen( GuiInfo.hwndCaret, &caretPt );
 
@@ -296,9 +300,32 @@ bool UiIndicator_Caret::retrievePositionByUIA( QPoint& Pt )
         if( FAILED( hr ) || !Focused )
             break;
 
+        // 입력 가능한 컨트롤인지 확인
+        CONTROLTYPEID ControlType = UIA_ButtonControlTypeId;
+        if( SUCCEEDED( Focused->get_CurrentControlType(&ControlType) ) )
+        {
+            // 입력 가능한 일반적인 타입들: Edit, Document(웹), RichEdit 등
+            // Button(50000), Link, TreeItem 등은 제외됨
+            if( ControlType != UIA_EditControlTypeId &&
+                ControlType != UIA_TextControlTypeId &&
+                ControlType != UIA_DocumentControlTypeId
+                )
+                break;
+        }
+
         // 해당 요소가 텍스트 패턴(TextPattern)을 지원하는지 확인
         CComPtr< IUIAutomationTextPattern >  TextPattern;
         CComPtr< IUIAutomationValuePattern > ValuePattern;
+
+        // 읽기 전용인지 확인
+        if( SUCCEEDED( Focused->GetCurrentPatternAs( UIA_ValuePatternId, IID_PPV_ARGS( &ValuePattern ) ) ) &&
+            ValuePattern != nullptr )
+        {
+            BOOL isReadOnly = FALSE;
+            if( (S_OK == ValuePattern->get_CurrentIsReadOnly( &isReadOnly )) && isReadOnly )
+                break;
+        }
+
         hr = Focused->GetCurrentPatternAs( UIA_TextPatternId, IID_PPV_ARGS( &TextPattern ) );
 
         if( SUCCEEDED( hr ) && TextPattern != nullptr )
