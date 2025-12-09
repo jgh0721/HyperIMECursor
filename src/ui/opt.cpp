@@ -31,6 +31,8 @@ void UiOpt::LoadSettings()
     Ui.chkIsCaretNumlock->setChecked( GET_VALUE( OPTION_ENGINE_CARET_IS_CHECK_NUMLOCK ).toBool() );
     Ui.spbCaretPollingMs->setValue( GET_VALUE( OPTION_ENGINE_CARET_POLLING_MS ).toInt() );
     Ui.edtCaretStyleSheet->setPlainText( GET_VALUE( OPTION_ENGINE_CARET_STYLESHEET ).toString() );
+    Ui.spbCaretOffsetX->setValue( GET_VALUE(OPTION_ENGINE_CARET_OFFSET_X ).toInt() );
+    Ui.spbCaretOffsetY->setValue( GET_VALUE(OPTION_ENGINE_CARET_OFFSET_Y ).toInt() );
 }
 
 void UiOpt::SaveSettings()
@@ -50,6 +52,8 @@ void UiOpt::SaveSettings()
     SET_VALUE( OPTION_ENGINE_CARET_IS_CHECK_NUMLOCK, Ui.chkIsCaretNumlock->isChecked() );
     SET_VALUE( OPTION_ENGINE_CARET_POLLING_MS, Ui.spbCaretPollingMs->value() );
     SET_VALUE( OPTION_ENGINE_CARET_STYLESHEET, Ui.edtCaretStyleSheet->toPlainText() );
+    SET_VALUE( OPTION_ENGINE_CARET_OFFSET_X, Ui.spbCaretOffsetX->value() );
+    SET_VALUE( OPTION_ENGINE_CARET_OFFSET_Y, Ui.spbCaretOffsetY->value() );
 
     Settings->sync();
     Q_EMIT settingsChanged();
