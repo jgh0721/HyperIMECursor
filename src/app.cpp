@@ -33,6 +33,7 @@ CIMECursorApp::CIMECursorApp( int& argc, char* argv[] )
 {
     setWindowIcon( QIcon( ":/res/app_icon.ico" ) );
     QSettings::setDefaultFormat( QSettings::IniFormat );
+    (void)QFontDatabase::addApplicationFont( ":res/SarasaMonoK-Light.ttf" );
 }
 
 CIMECursorApp::~CIMECursorApp()

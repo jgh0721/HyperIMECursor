@@ -26,6 +26,7 @@ UiIndicator_Caret::UiIndicator_Caret( QWidget* parent )
     layout->setContentsMargins( 0, 0, 0, 0 );
 
     m_label = new QLabel( this );
+    m_label->setFont( QFont( DEFAULT_BUILTIN_FONT_FAMILY ) );
     m_label->setStyleSheet( OPTION_ENGINE_CARET_STYLESHEET_DEFAULT );
     m_label->adjustSize();
     layout->addWidget( m_label );

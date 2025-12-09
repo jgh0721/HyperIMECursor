@@ -14,6 +14,8 @@ extern uint64_t             IMEActiveCheckTime;
 #define SETTINGS_TASK_NAME                              L"HyperIMEIndicator Launch"
 #endif
 
+#define DEFAULT_BUILTIN_FONT_FAMILY                     "Sarasa Mono K"
+
 #define OPTION_DETECT_GROUP                             "Engine"
 #define OPTION_DETECT_ATTACH_THREAD_INPUT               OPTION_DETECT_GROUP "/AttachThreadInput"
 #define OPTION_DETECT_ATTACH_THREAD_INPUT_DEFAULT       false

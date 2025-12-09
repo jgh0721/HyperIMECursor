@@ -4,5 +4,6 @@
         <file>res/english_icon.ico</file>
         <file>res/korean_icon.ico</file>
         <file>res/unknown_icon.ico</file>
+        <file>res/SarasaMonoK-Light.ttf</file>
     </qresource>
 </RCC>
