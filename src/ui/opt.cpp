@@ -31,8 +31,10 @@ void UiOpt::LoadSettings()
     Ui.chkIsCaretNumlock->setChecked( GET_VALUE( OPTION_ENGINE_CARET_IS_CHECK_NUMLOCK ).toBool() );
     Ui.spbCaretPollingMs->setValue( GET_VALUE( OPTION_ENGINE_CARET_POLLING_MS ).toInt() );
     Ui.edtCaretStyleSheet->setPlainText( GET_VALUE( OPTION_ENGINE_CARET_STYLESHEET ).toString() );
-    Ui.spbCaretOffsetX->setValue( GET_VALUE(OPTION_ENGINE_CARET_OFFSET_X ).toInt() );
-    Ui.spbCaretOffsetY->setValue( GET_VALUE(OPTION_ENGINE_CARET_OFFSET_Y ).toInt() );
+    Ui.spbCaretOffsetX->setValue( GET_VALUE( OPTION_ENGINE_CARET_OFFSET_X ).toInt() );
+    Ui.spbCaretOffsetY->setValue( GET_VALUE( OPTION_ENGINE_CARET_OFFSET_Y ).toInt() );
+
+    Ui.chkIsPopup->setChecked( GET_VALUE( OPTION_ENGINE_POPUP_IS_USE ).toBool() );
 }
 
 void UiOpt::SaveSettings()
@@ -40,8 +42,8 @@ void UiOpt::SaveSettings()
     const auto Settings = GetSettings();
 
     SET_VALUE( OPTION_DETECT_ATTACH_THREAD_INPUT, Ui.rdoIME_Attach->isChecked() );
-    SET_VALUE( OPTION_DETECT_SENDMESSAGE, Ui.rdoIME_Attach->isChecked() );
-    SET_VALUE( OPTION_DETECT_KEYBOARD_HOOK, Ui.rdoIME_Attach->isChecked() );
+    SET_VALUE( OPTION_DETECT_SENDMESSAGE, Ui.rdoIME_SendMessage->isChecked() );
+    SET_VALUE( OPTION_DETECT_KEYBOARD_HOOK, Ui.chkIME_KeyboardHook->isChecked() );
     SET_VALUE( OPTION_DETECT_DETECT_POLLING_MS, Ui.spbIMEPollingMs->value() );
 
     SET_VALUE( OPTION_STARTUP_START_ON_WINDOWS_BOOT, Ui.chkIsRunOnStartup->isChecked() );
@@ -54,6 +56,8 @@ void UiOpt::SaveSettings()
     SET_VALUE( OPTION_ENGINE_CARET_STYLESHEET, Ui.edtCaretStyleSheet->toPlainText() );
     SET_VALUE( OPTION_ENGINE_CARET_OFFSET_X, Ui.spbCaretOffsetX->value() );
     SET_VALUE( OPTION_ENGINE_CARET_OFFSET_Y, Ui.spbCaretOffsetY->value() );
+
+    SET_VALUE( OPTION_ENGINE_POPUP_IS_USE, Ui.chkIsPopup->isChecked() );
 
     Settings->sync();
     Q_EMIT settingsChanged();

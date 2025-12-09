@@ -514,6 +514,170 @@ QTabBar::tab
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tabPopup">
+      <attribute name="title">
+       <string>팝업</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0" colspan="2">
+        <widget class="QCheckBox" name="chkIsPopup">
+         <property name="font">
+          <font>
+           <family>Sarasa Mono K</family>
+           <pointsize>10</pointsize>
+           <stylestrategy>PreferAntialias</stylestrategy>
+           <hintingpreference>PreferFullHinting</hintingpreference>
+          </font>
+         </property>
+         <property name="text">
+          <string>사용</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2" rowspan="2">
+        <widget class="QFrame" name="frmCaretPolling_2">
+         <property name="styleSheet">
+          <string notr="true">QFrame#frmCaretPolling
+{ 
+	border: 1px solid gray; 
+	border-radius: 8px;
+}</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_8">
+          <item>
+           <widget class="QLabel" name="label_3">
+            <property name="font">
+             <font>
+              <family>Sarasa Mono K</family>
+              <pointsize>10</pointsize>
+              <stylestrategy>PreferAntialias</stylestrategy>
+              <hintingpreference>PreferFullHinting</hintingpreference>
+             </font>
+            </property>
+            <property name="text">
+             <string>팝업 표시 시간(ms)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spbPopupShowMs">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Sarasa Mono K</family>
+              <pointsize>10</pointsize>
+              <stylestrategy>PreferAntialias</stylestrategy>
+              <hintingpreference>PreferFullHinting</hintingpreference>
+             </font>
+            </property>
+            <property name="maximum">
+             <number>9999</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="font">
+          <font>
+           <family>Sarasa Mono K</family>
+           <pointsize>10</pointsize>
+           <stylestrategy>PreferAntialias</stylestrategy>
+           <hintingpreference>PreferFullHinting</hintingpreference>
+          </font>
+         </property>
+         <property name="text">
+          <string>위치:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="cbxPopupPlacement">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>110</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Sarasa Mono K</family>
+           <pointsize>10</pointsize>
+           <stylestrategy>PreferAntialias</stylestrategy>
+           <hintingpreference>PreferFullHinting</hintingpreference>
+          </font>
+         </property>
+         <item>
+          <property name="text">
+           <string>상단 : 중앙</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>하단 : 중앙</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="3">
+        <widget class="QGroupBox" name="grpPopupStyleSheet">
+         <property name="font">
+          <font>
+           <family>Sarasa Mono K</family>
+           <pointsize>10</pointsize>
+           <stylestrategy>PreferAntialias</stylestrategy>
+           <hintingpreference>PreferFullHinting</hintingpreference>
+          </font>
+         </property>
+         <property name="title">
+          <string>스타일시트</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_7">
+          <property name="leftMargin">
+           <number>6</number>
+          </property>
+          <property name="topMargin">
+           <number>3</number>
+          </property>
+          <property name="rightMargin">
+           <number>6</number>
+          </property>
+          <property name="bottomMargin">
+           <number>3</number>
+          </property>
+          <item>
+           <widget class="QPlainTextEdit" name="edtPopupStyleSheet">
+            <property name="font">
+             <font>
+              <family>Sarasa Mono K</family>
+              <pointsize>10</pointsize>
+              <stylestrategy>PreferAntialias</stylestrategy>
+              <hintingpreference>PreferFullHinting</hintingpreference>
+             </font>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
    <item>
