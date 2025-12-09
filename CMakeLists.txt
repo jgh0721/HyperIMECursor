@@ -12,7 +12,7 @@ set(CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION "${WINDOWS_SDK_VERSION}" CACHE STRI
 set(ENV{WindowsSDKVersion} "${WINDOWS_SDK_VERSION}\\")
 set(ENV{WindowsSDKLibVersion} "${WINDOWS_SDK_VERSION}\\")
 
-project(HyperIMEIndicator LANGUAGES C CXX VERSION 0.0.0.2)
+project(HyperIMEIndicator LANGUAGES C CXX VERSION 0.3.0.0)
  
 # C++ 표준 설정
 set(CMAKE_CXX_STANDARD 20)
@@ -51,9 +51,9 @@ set( FORMS
         src/ui/opt.ui
         src/ui/opt.cpp
         src/ui/opt.hpp
-        src/ui/indicator.ui
-        src/ui/indicator.cpp
-        src/ui/indicator.hpp
+        src/ui/indicator_popup.ui
+        src/ui/indicator_popup.cpp
+        src/ui/indicator_popup.hpp
         src/ui/indicator_caret.cpp
         src/ui/indicator_caret.hpp
         src/ui/about.cpp
