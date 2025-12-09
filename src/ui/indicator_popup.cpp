@@ -1,7 +1,9 @@
 ﻿#include "stdafx.h"
-#include "indicator.hpp"
+#include "indicator_popup.hpp"
 
-UiIndicator::UiIndicator( QWidget* parent, Qt::WindowFlags f )
+#include "settings.hpp"
+
+UiIndicator_Popup::UiIndicator_Popup( QWidget* parent, Qt::WindowFlags f )
     : QDialog( parent, f )
 {
     setAttribute( Qt::WA_ShowWithoutActivating );
@@ -11,12 +13,13 @@ UiIndicator::UiIndicator( QWidget* parent, Qt::WindowFlags f )
 
     Timer = new QTimer( this );
     Timer->setSingleShot( true );
-    connect( Timer, &QTimer::timeout, this, &UiIndicator::hide );
+    connect( Timer, &QTimer::timeout, this, &UiIndicator_Popup::hide );
 
+    Ui.lblStatusText->setFont( QFont( DEFAULT_BUILTIN_FONT_FAMILY ) );
     (void)winId();
 }
 
-void UiIndicator::SetIMEMode( bool IsKoreanMode )
+void UiIndicator_Popup::SetIMEMode( bool IsKoreanMode )
 {
     QString Label;
 
@@ -28,7 +31,7 @@ void UiIndicator::SetIMEMode( bool IsKoreanMode )
     Ui.lblStatusText->setText( Label );
 }
 
-void UiIndicator::Show( int WaitSecs )
+void UiIndicator_Popup::Show( int WaitSecs )
 {
     if( WaitSecs > 0 )
     {
@@ -60,8 +63,8 @@ void UiIndicator::Show( int WaitSecs )
     const int y = availableGeometry.bottom() - widgetHeight - 50;  // bottom()은 inclusive
 
     setScreen( screen );
-    setFixedSize(widgetWidth, widgetHeight);
-    move(x, y);
+    setFixedSize( widgetWidth, widgetHeight );
+    move( x, y );
 
     show();
 }

@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 class UiOpt;
-class UiIndicator;
+class UiIndicator_Popup;
 class UiIndicator_Caret;
 class QWndBorderOverlay;
 
@@ -30,6 +30,6 @@ private:
     // QPointer<QWndBorderOverlay>         m_pOverlay = nullptr;
     //
     QPointer<UiOpt>                     m_pUiOpt = nullptr;
-    // QPointer<UiIndicator>               m_pUiIndicator = nullptr;
     QPointer<UiIndicator_Caret>         m_pUiIndicatorCaret = nullptr;
+    QPointer<UiIndicator_Popup>         m_pUiIndicatorPopup = nullptr;
 };

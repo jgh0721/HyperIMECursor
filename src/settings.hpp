@@ -48,7 +48,7 @@ extern uint64_t             IMEActiveCheckTime;
 
 #define OPTION_ENGINE_CARET_STYLESHEET                  OPTION_ENGINE_CARET_GROUP "/StyleSheet"
 #define OPTION_ENGINE_CARET_STYLESHEET_DEFAULT          R"(QLabel {
-    background-color: rgba( 0, 0, 0, 180 );
+    background-color: rgba( 0, 0, 0, 150 );
     color: white;
     border: 1px solid gray;
     border-radius: 6px;
@@ -56,6 +56,10 @@ extern uint64_t             IMEActiveCheckTime;
     font-weight: semi-bold;
     font-size: 13px;
 })"
+
+#define OPTION_ENGINE_POPUP_GROUP                       "EnginePopup"
+#define OPTION_ENGINE_POPUP_IS_USE                      OPTION_ENGINE_POPUP_GROUP "/Use"
+#define OPTION_ENGINE_POPUP_IS_USE_DEFAULT              false
 
 #define GET_VALUE( Value ) \
     GetSettings()->value( Value, Value##_DEFAULT )

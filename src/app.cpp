@@ -3,7 +3,7 @@
 #include "CTaskSchedulerHelper.hpp"
 
 #include "ui/about.hpp"
-#include "ui/indicator.hpp"
+#include "ui/indicator_popup.hpp"
 #include "ui/indicator_caret.hpp"
 
 #include "imeborderindicator.hpp"
@@ -60,6 +60,7 @@ void CIMECursorApp::Initialize()
         m_pTimer = new QTimer;
         m_pUiOpt = new UiOpt;
         m_pUiIndicatorCaret = new UiIndicator_Caret;
+        m_pUiIndicatorPopup = new UiIndicator_Popup;
         m_pUiIndicatorCaret->SetCheckIME( GET_VALUE( OPTION_ENGINE_CARET_IS_CHECK_IME ).toBool() );
         m_pUiIndicatorCaret->SetCheckNumlock( GET_VALUE( OPTION_ENGINE_CARET_IS_CHECK_NUMLOCK ).toBool() );
         m_pUiIndicatorCaret->SetPollingMs( GET_VALUE( OPTION_ENGINE_CARET_POLLING_MS ).toInt() );
@@ -153,6 +154,10 @@ void CIMECursorApp::updateIMEStatus()
     if( GET_VALUE( OPTION_ENGINE_CARET_IS_USE ).toBool() == true )
         m_pUiIndicatorCaret->Show();
 
+    m_pUiIndicatorPopup->SetIMEMode( IsKoreanMode );
+    if( GET_VALUE( OPTION_ENGINE_POPUP_IS_USE ).toBool() == true )
+        m_pUiIndicatorPopup->Show();
+
     // if( StSettings->value( OPTION_NOTIFY_SHOW_NOTIFICATION_ICON, OPTION_NOTIFY_SHOW_NOTIFICATION_ICON_DEFAULT ).toBool() == true )
     // {
     //     if( m_pTrayIcon != nullptr &&
@@ -188,7 +193,7 @@ LRESULT CIMECursorApp::LowLevelKeyboardProc( int nCode, WPARAM wParam, LPARAM lP
         // 마지막 체크 시간 무효화
         IMEActiveCheckTime = 0;
 
-        const auto future = std::async( std::launch::async, []() {
+        const auto Future = std::async( std::launch::async, []() {
             std::this_thread::sleep_for( std::chrono::milliseconds( 15 ) );
             QMetaObject::invokeMethod( qApp, "updateIMEStatus", Qt::QueuedConnection );
         } );
