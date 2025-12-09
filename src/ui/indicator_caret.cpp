@@ -74,6 +74,11 @@ void UiIndicator_Caret::SetCheckNumlock( bool IsCheck )
     m_isCheckNumlock = IsCheck;
 }
 
+void UiIndicator_Caret::SetOffset( const QPoint& Pt )
+{
+    m_offset = Pt;
+}
+
 void UiIndicator_Caret::Show()
 {
     if( m_timer->isActive() == false )
@@ -158,7 +163,7 @@ void UiIndicator_Caret::updateStatus()
         targetPos = QPoint( static_cast< int >( CaretPos.x() / dpr ), static_cast< int >( CaretPos.y() / dpr ) );
     }
 
-    move(targetPos);
+    move( targetPos + m_offset );
 
     m_label->setText( makeStatusText() );
     m_label->adjustSize();

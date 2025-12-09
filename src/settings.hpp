@@ -41,6 +41,11 @@ extern uint64_t             IMEActiveCheckTime;
 #define OPTION_ENGINE_CARET_IS_CHECK_NUMLOCK_DEFAULT    false
 #define OPTION_ENGINE_CARET_POLLING_MS                  OPTION_ENGINE_CARET_GROUP "/PollingMs"
 #define OPTION_ENGINE_CARET_POLLING_MS_DEFAULT          100
+#define OPTION_ENGINE_CARET_OFFSET_X                    OPTION_ENGINE_CARET_GROUP "/OffsetX"
+#define OPTION_ENGINE_CARET_OFFSET_X_DEFAULT            10
+#define OPTION_ENGINE_CARET_OFFSET_Y                    OPTION_ENGINE_CARET_GROUP "/OffsetY"
+#define OPTION_ENGINE_CARET_OFFSET_Y_DEFAULT            6
+
 #define OPTION_ENGINE_CARET_STYLESHEET                  OPTION_ENGINE_CARET_GROUP "/StyleSheet"
 #define OPTION_ENGINE_CARET_STYLESHEET_DEFAULT          R"(QLabel {
     background-color: rgba( 0, 0, 0, 180 );

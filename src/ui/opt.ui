@@ -250,53 +250,57 @@ QTabBar::tab
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item row="0" column="0">
-        <widget class="QCheckBox" name="chkIsCaret">
-         <property name="font">
-          <font>
-           <family>Sarasa Mono K</family>
-           <pointsize>10</pointsize>
-           <stylestrategy>PreferAntialias</stylestrategy>
-           <hintingpreference>PreferFullHinting</hintingpreference>
-          </font>
+       <item row="0" column="1" rowspan="3">
+        <widget class="QFrame" name="frmCaretPolling">
+         <property name="styleSheet">
+          <string notr="true">QFrame#frmCaretPolling
+{ 
+	border: 1px solid gray; 
+	border-radius: 8px;
+}</string>
          </property>
-         <property name="text">
-          <string>사용</string>
-         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_6">
+          <item>
+           <widget class="QLabel" name="label_2">
+            <property name="font">
+             <font>
+              <family>Sarasa Mono K</family>
+              <pointsize>10</pointsize>
+              <stylestrategy>PreferAntialias</stylestrategy>
+              <hintingpreference>PreferFullHinting</hintingpreference>
+             </font>
+            </property>
+            <property name="text">
+             <string>캐럿 위치 추적 주기(ms)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spbCaretPollingMs">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Sarasa Mono K</family>
+              <pointsize>10</pointsize>
+              <stylestrategy>PreferAntialias</stylestrategy>
+              <hintingpreference>PreferFullHinting</hintingpreference>
+             </font>
+            </property>
+            <property name="maximum">
+             <number>9999</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QCheckBox" name="chkIsCaretIME">
-         <property name="font">
-          <font>
-           <family>Sarasa Mono K</family>
-           <pointsize>10</pointsize>
-           <stylestrategy>PreferAntialias</stylestrategy>
-           <hintingpreference>PreferFullHinting</hintingpreference>
-          </font>
-         </property>
-         <property name="text">
-          <string>IME 상태</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QCheckBox" name="chkIsCaretNumlock">
-         <property name="font">
-          <font>
-           <family>Sarasa Mono K</family>
-           <pointsize>10</pointsize>
-           <stylestrategy>PreferAntialias</stylestrategy>
-           <hintingpreference>PreferFullHinting</hintingpreference>
-          </font>
-         </property>
-         <property name="text">
-          <string>NumLock 상태</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0" colspan="2">
-        <widget class="QGroupBox" name="groupBox_3">
+       <item row="4" column="0" colspan="2">
+        <widget class="QGroupBox" name="grpCaretStyleSheet">
          <property name="font">
           <font>
            <family>Sarasa Mono K</family>
@@ -339,37 +343,106 @@ QTabBar::tab
          </layout>
         </widget>
        </item>
-       <item row="0" column="1" rowspan="3">
-        <widget class="QFrame" name="frmCaretPolling">
+       <item row="0" column="0">
+        <widget class="QCheckBox" name="chkIsCaret">
+         <property name="font">
+          <font>
+           <family>Sarasa Mono K</family>
+           <pointsize>10</pointsize>
+           <stylestrategy>PreferAntialias</stylestrategy>
+           <hintingpreference>PreferFullHinting</hintingpreference>
+          </font>
+         </property>
+         <property name="text">
+          <string>사용</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QCheckBox" name="chkIsCaretNumlock">
+         <property name="font">
+          <font>
+           <family>Sarasa Mono K</family>
+           <pointsize>10</pointsize>
+           <stylestrategy>PreferAntialias</stylestrategy>
+           <hintingpreference>PreferFullHinting</hintingpreference>
+          </font>
+         </property>
+         <property name="text">
+          <string>NumLock 상태</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QCheckBox" name="chkIsCaretIME">
+         <property name="font">
+          <font>
+           <family>Sarasa Mono K</family>
+           <pointsize>10</pointsize>
+           <stylestrategy>PreferAntialias</stylestrategy>
+           <hintingpreference>PreferFullHinting</hintingpreference>
+          </font>
+         </property>
+         <property name="text">
+          <string>IME 상태</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="2">
+        <widget class="QGroupBox" name="frmCaretPosOffset">
+         <property name="font">
+          <font>
+           <family>Sarasa Mono K</family>
+           <pointsize>10</pointsize>
+           <stylestrategy>PreferAntialias</stylestrategy>
+           <hintingpreference>PreferFullHinting</hintingpreference>
+          </font>
+         </property>
          <property name="styleSheet">
-          <string notr="true">QFrame#frmCaretPolling
+          <string notr="true">QFrame#frmCaretPosOffset
 { 
 	border: 1px solid gray; 
 	border-radius: 8px;
 }</string>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_6">
+         <property name="title">
+          <string>캐럿 출력 위치 조정</string>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
           <item>
-           <widget class="QLabel" name="label_2">
+           <widget class="QLabel" name="label_5">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
             <property name="font">
              <font>
-              <family>Sarasa Mono K</family>
-              <pointsize>10</pointsize>
               <stylestrategy>PreferAntialias</stylestrategy>
               <hintingpreference>PreferFullHinting</hintingpreference>
              </font>
             </property>
             <property name="text">
-             <string>캐럿 위치 추적 주기(ms)</string>
+             <string>X:</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QSpinBox" name="spbCaretPollingMs">
+           <widget class="QSpinBox" name="spbCaretOffsetX">
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>26</height>
+              <height>30</height>
              </size>
             </property>
             <property name="font">
@@ -379,6 +452,57 @@ QTabBar::tab
               <stylestrategy>PreferAntialias</stylestrategy>
               <hintingpreference>PreferFullHinting</hintingpreference>
              </font>
+            </property>
+            <property name="prefix">
+             <string/>
+            </property>
+            <property name="minimum">
+             <number>-9999</number>
+            </property>
+            <property name="maximum">
+             <number>9999</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_6">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Sarasa Mono K</family>
+              <pointsize>10</pointsize>
+              <stylestrategy>PreferAntialias</stylestrategy>
+              <hintingpreference>PreferFullHinting</hintingpreference>
+             </font>
+            </property>
+            <property name="text">
+             <string>Y:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spbCaretOffsetY">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Sarasa Mono K</family>
+              <pointsize>10</pointsize>
+              <stylestrategy>PreferAntialias</stylestrategy>
+              <hintingpreference>PreferFullHinting</hintingpreference>
+             </font>
+            </property>
+            <property name="minimum">
+             <number>-9999</number>
             </property>
             <property name="maximum">
              <number>9999</number>

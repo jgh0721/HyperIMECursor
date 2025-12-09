@@ -19,6 +19,7 @@ public:
     void                                SetStyleSheet( const QString& StyleSheet );
     void                                SetCheckIME( bool IsCheck );
     void                                SetCheckNumlock( bool IsCheck );
+    void                                SetOffset( const QPoint& Pt );
 
     void                                Show();
     void                                Hide();
@@ -40,6 +41,7 @@ private:
 
     QLabel*                             m_label = nullptr;
     QTimer*                             m_timer = nullptr;
+    QPoint                              m_offset;
     CComPtr<IUIAutomation>              m_pAutomation;
 };
 

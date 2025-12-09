@@ -64,6 +64,7 @@ void CIMECursorApp::Initialize()
         m_pUiIndicatorCaret->SetCheckNumlock( GET_VALUE( OPTION_ENGINE_CARET_IS_CHECK_NUMLOCK ).toBool() );
         m_pUiIndicatorCaret->SetPollingMs( GET_VALUE( OPTION_ENGINE_CARET_POLLING_MS ).toInt() );
         m_pUiIndicatorCaret->SetStyleSheet( GET_VALUE( OPTION_ENGINE_CARET_STYLESHEET ).toString() );
+        m_pUiIndicatorCaret->SetOffset( QPoint( GET_VALUE( OPTION_ENGINE_CARET_OFFSET_X ).toInt(), GET_VALUE( OPTION_ENGINE_CARET_OFFSET_Y ).toInt() ) );
 
         connect( m_pUiOpt, &UiOpt::settingsChanged, this, &CIMECursorApp::settingsChanged );
 
@@ -133,6 +134,7 @@ void CIMECursorApp::settingsChanged()
     m_pUiIndicatorCaret->SetCheckNumlock( GET_VALUE( OPTION_ENGINE_CARET_IS_CHECK_NUMLOCK ).toBool() );
     m_pUiIndicatorCaret->SetPollingMs( GET_VALUE( OPTION_ENGINE_CARET_POLLING_MS ).toInt() );
     m_pUiIndicatorCaret->SetStyleSheet( GET_VALUE( OPTION_ENGINE_CARET_STYLESHEET ).toString() );
+    m_pUiIndicatorCaret->SetOffset( QPoint( GET_VALUE( OPTION_ENGINE_CARET_OFFSET_X ).toInt(), GET_VALUE( OPTION_ENGINE_CARET_OFFSET_Y ).toInt() ) );
 }
 
 void CIMECursorApp::updateIMEStatus()
