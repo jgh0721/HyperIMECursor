@@ -290,66 +290,81 @@ bool UiIndicator_Caret::retrievePositionByUIA( QPoint& Pt )
         if( m_pAutomation == nullptr )
             break;
 
-        CComPtr< IUIAutomationElement > pFocused;
+        CComPtr< IUIAutomationElement > Focused;
         // 현재 포커스된 요소 가져오기
-        HRESULT hr = m_pAutomation->GetFocusedElement( &pFocused );
-        if( FAILED( hr ) || !pFocused ) return false;
+        HRESULT hr = m_pAutomation->GetFocusedElement( &Focused );
+        if( FAILED( hr ) || !Focused )
+            break;
 
         // 해당 요소가 텍스트 패턴(TextPattern)을 지원하는지 확인
-        CComPtr< IUIAutomationTextPattern >  pTextPattern;
-        CComPtr< IUIAutomationValuePattern > pValuePattern;
-        hr = pFocused->GetCurrentPatternAs( UIA_TextPatternId, IID_PPV_ARGS( &pTextPattern ) );
+        CComPtr< IUIAutomationTextPattern >  TextPattern;
+        CComPtr< IUIAutomationValuePattern > ValuePattern;
+        hr = Focused->GetCurrentPatternAs( UIA_TextPatternId, IID_PPV_ARGS( &TextPattern ) );
 
-        if( FAILED( hr ) || !pTextPattern )
+        if( SUCCEEDED( hr ) && TextPattern != nullptr )
         {
-            // 텍스트 패턴이 없으면 ValuePattern 등을 시도할 수도 있지만,
-            // 캐럿 위치는 보통 TextPattern의 GetSelection으로 얻습니다.
-            break;
-        }
+            if( FAILED( hr ) || !TextPattern )
+            {
+                // 텍스트 패턴이 없으면 ValuePattern 등을 시도할 수도 있지만,
+                // 캐럿 위치는 보통 TextPattern의 GetSelection으로 얻습니다.
+                break;
+            }
 
-        // 현재 선택 영역(캐럿 포함) 가져오기
-        CComPtr< IUIAutomationTextRangeArray > pRanges;
-        hr = pTextPattern->GetSelection( &pRanges );
-        if( FAILED( hr ) || !pRanges )
-            break;
-
-        int count = 0;
-        pRanges->get_Length( &count );
-        if( count <= 0 )
-            break;
-
-        // 첫 번째 범위(보통 캐럿 위치) 가져오기
-        CComPtr< IUIAutomationTextRange > pRange;
-        hr = pRanges->GetElement( 0, &pRange );
-        if( FAILED( hr ) || !pRange )
-            break;
-
-        // 범위의 경계 사각형(Bounding Rect) 가져오기
-        // 이 값은 화면(Screen) 좌표계입니다.
-        CComSafeArray< double > rects;
-        hr = pRange->GetBoundingRectangles( rects.GetSafeArrayPtr() );
-        if( FAILED( hr ) || rects == nullptr )
-            break;
-
-        if( FAILED( SafeArrayLock( rects ) ) )
-            break;
-
-        if( rects.GetCount() < 4 )
-        {
-            hr = pRange->ExpandToEnclosingUnit( TextUnit_Character );
-            if( FAILED( hr ) )
+            // 현재 선택 영역(캐럿 포함) 가져오기
+            CComPtr< IUIAutomationTextRangeArray > pRanges;
+            hr = TextPattern->GetSelection( &pRanges );
+            if( FAILED( hr ) || !pRanges )
                 break;
 
-            rects.Destroy();
+            int count = 0;
+            pRanges->get_Length( &count );
+            if( count <= 0 )
+                break;
+
+            // 첫 번째 범위(보통 캐럿 위치) 가져오기
+            CComPtr< IUIAutomationTextRange > pRange;
+            hr = pRanges->GetElement( 0, &pRange );
+            if( FAILED( hr ) || !pRange )
+                break;
+
+            // 범위의 경계 사각형(Bounding Rect) 가져오기
+            // 이 값은 화면(Screen) 좌표계입니다.
+            CComSafeArray< double > rects;
             hr = pRange->GetBoundingRectangles( rects.GetSafeArrayPtr() );
             if( FAILED( hr ) || rects == nullptr )
                 break;
-        }
 
-        // rects 배열은 [L, T, W, H] 순서로 들어있음
-        if( SUCCEEDED( SafeArrayLock( rects ) ) &&
-            rects.GetCount() >= 4 )
-        {
+            bool IsSafeArrayLock = false;
+            if( FAILED( SafeArrayLock( rects ) ) )
+                break;
+
+            IsSafeArrayLock = true;
+            if( rects.GetCount() < 4 )
+            {
+                hr = pRange->ExpandToEnclosingUnit( TextUnit_Character );
+                if( FAILED( hr ) )
+                    break;
+
+                rects.Destroy();
+                hr = pRange->GetBoundingRectangles( rects.GetSafeArrayPtr() );
+                if( FAILED( hr ) || rects == nullptr )
+                    break;
+
+                IsSafeArrayLock = false;
+            }
+
+            if( IsSafeArrayLock == false )
+            {
+                if( FAILED( SafeArrayLock( rects ) ) )
+                    break;
+
+                IsSafeArrayLock = true;
+            }
+
+            if( rects.GetCount() < 4 )
+                break;
+
+            // rects 배열은 [L, T, W, H] 순서로 들어있음
             double left   = rects.GetAt( 0 );
             double top    = rects.GetAt( 1 );
             double width  = rects.GetAt( 2 );
@@ -365,6 +380,12 @@ bool UiIndicator_Caret::retrievePositionByUIA( QPoint& Pt )
                 hr = pRange->GetBoundingRectangles( rects.GetSafeArrayPtr() );
                 if( FAILED( hr ) || rects == nullptr )
                     break;
+
+                if( FAILED( SafeArrayLock( rects ) ) )
+                    break;
+
+                width  = rects.GetAt( 2 );
+                height = rects.GetAt( 3 );
             }
 
             // 값이 유효한지 체크 (화면 밖이거나 0인 경우 제외)
@@ -375,7 +396,29 @@ bool UiIndicator_Caret::retrievePositionByUIA( QPoint& Pt )
                 Pt.setY( static_cast< LONG >( top + height ) );
                 IsSuccess = true;
             }
+
         }
+        else
+        {
+            RECT ElementRect = { 0 };
+            if( SUCCEEDED( Focused->get_CurrentBoundingRectangle( &ElementRect ) ) )
+            {
+                // 화면 밖이거나(0,0,0,0) 유효하지 않은 경우 제외
+                if( ElementRect.right > ElementRect.left && ElementRect.bottom > ElementRect.top )
+                {
+                    // 박스의 좌상단 + 약간의 패딩(Padding)
+                    Pt.setX( ElementRect.left + 8 );
+                    Pt.setY( ElementRect.top + 20 ); // 대략적인 첫 줄 높이
+
+                    // 만약 높이가 충분히 작다면(한 줄짜리), 그 하단을 사용
+                    if( (ElementRect.bottom - ElementRect.top) < 40 )
+                        Pt.setY( ElementRect.bottom - 2 );
+
+                    IsSuccess = true;
+                }
+            }
+        }
+
     } while( false );
 
     return IsSuccess;
