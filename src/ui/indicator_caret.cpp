@@ -91,84 +91,110 @@ void UiIndicator_Caret::Hide()
     hide();
 }
 
+void UiIndicator_Caret::SltMouseWheel( const QDateTime& TimeStamp, const QPoint& Pos )
+{
+    auto Wheel = TimeStamp.toMSecsSinceEpoch();
+    qSwap( m_lastWheelTimeStamp, Wheel );
+}
+
 void UiIndicator_Caret::updateStatus()
 {
-    static QPoint PrevCaretPos = {};
-    static bool PrevNumLockOn = false;
+    static QPoint                       PrevCaretPos = {};
+    static bool                         PrevNumLockOn = false;
+    static const int                    ScrollCooldownMs = 300;
 
-    auto       CaretPos    = retrieveCaretPosition();
-    const bool IsNumlockOn = ((( SHORT )GetKeyState( VK_NUMLOCK )) & 0x0001) != 0;
-
-    if( PrevNumLockOn != IsNumlockOn )
+    do
     {
-        if( m_isCheckNumlock == true )
+        if( QDateTime::currentMSecsSinceEpoch() - m_lastWheelTimeStamp < ScrollCooldownMs )
+        {
+            if( isVisible() == true )
+                hide();
+
+            break;
+        }
+
+        auto       CaretPos         = retrieveCaretPosition();
+        const bool IsNumlockOn      = ((( SHORT )GetKeyState( VK_NUMLOCK )) & 0x0001) != 0;
+        const bool IsNumlockChanged = PrevNumLockOn != IsNumlockOn;
+
+        if( m_isCheckNumlock == true && IsNumlockChanged == true )
             m_isChanged = true;
 
         PrevNumLockOn = IsNumlockOn;
-    }
 
-    if( PrevCaretPos == CaretPos && m_isChanged == false )
-        return;
+        if( PrevCaretPos == CaretPos && m_isChanged == false )
+            break;
 
-    if( PrevCaretPos != CaretPos )
-        nsCmn::PrintDebugString( nsCmn::Format( L"Caret Pos = %d|%d", CaretPos.x(), CaretPos.y() ) );
+        if( PrevCaretPos != CaretPos )
+        {
+#ifdef _DEBUG
+            const auto StatusText = nsCmn::Format( L"PrevCaretPos = %d|%d\tCurrCaretPos = %d|%d\tIME Mode = %d\tFlags = %d",
+                                                   PrevCaretPos.x(), PrevCaretPos.y(),
+                                                   CaretPos.x(), CaretPos.y(), m_isCurrentIMEMode, m_isChanged );
+            nsCmn::PrintDebugString( StatusText );
+#endif
+        }
 
-    PrevCaretPos = CaretPos;
+        PrevCaretPos = CaretPos;
 
-    if( CaretPos.x() == 0 && CaretPos.y() == 0 )
-    {
-        hide();
-        return;
-    }
+        if( CaretPos.x() == 0 && CaretPos.y() == 0 )
+        {
+            hide();
+            break;
+        }
 
-    // Ms Teams 등 몇몇 제품에서 특정 경우( 보조 모니터의 전체화면 표시 ) 에 좌표값에 따른 QScreen 을 정확히 인식하지 못하는 문제 수정
-    QScreen* CurScreen = retrieveQScreenFromHWND( GetForegroundWindow() );
+        // Ms Teams 등 몇몇 제품에서 특정 경우( 보조 모니터의 전체화면 표시 ) 에 좌표값에 따른 QScreen 을 정확히 인식하지 못하는 문제 수정
+        QScreen* CurScreen = retrieveQScreenFromHWND( GetForegroundWindow() );
 
-    if( !CurScreen )
-        CurScreen = QGuiApplication::primaryScreen();
+        if( !CurScreen )
+            CurScreen = QGuiApplication::primaryScreen();
 
-    if( !CurScreen )
-    {
-        hide();
-        return;
-    }
+        if( !CurScreen )
+        {
+            hide();
+            break;
+        }
 
-    if( CurScreen != screen() )
-        setScreen( CurScreen );
+        if( CurScreen != screen() )
+            setScreen( CurScreen );
 
-    // 다중 모니터 간에 캐럿이 이동할 때의 보정 처리, 최초 위젯이 생성된 QScreen 과 다른 스크린에 캐럿이 있을 때의 처리가 필요함.
-    POINT       pt   = { CaretPos.x(), CaretPos.y() };
-    HMONITOR    hMon = MonitorFromPoint( pt, MONITOR_DEFAULTTONEAREST );
-    MONITORINFO mi   = { sizeof( MONITORINFO ) };
+        // 다중 모니터 간에 캐럿이 이동할 때의 보정 처리, 최초 위젯이 생성된 QScreen 과 다른 스크린에 캐럿이 있을 때의 처리가 필요함.
+        POINT       pt   = { CaretPos.x(), CaretPos.y() };
+        HMONITOR    hMon = MonitorFromPoint( pt, MONITOR_DEFAULTTONEAREST );
+        MONITORINFO mi   = { sizeof( MONITORINFO ) };
 
-    QPoint      targetPos;
-    const qreal dpr = screen()->devicePixelRatio();
+        QPoint      targetPos;
+        const qreal dpr = screen()->devicePixelRatio();
 
-    if( GetMonitorInfo( hMon, &mi ) )
-    {
-        // 1. 모니터 시작점으로부터의 물리적 오프셋(거리) 계산
-        int physicalOffsetX = CaretPos.x() - mi.rcMonitor.left;
-        int physicalOffsetY = CaretPos.y() - mi.rcMonitor.top;
+        if( GetMonitorInfo( hMon, &mi ) )
+        {
+            // 1. 모니터 시작점으로부터의 물리적 오프셋(거리) 계산
+            int physicalOffsetX = CaretPos.x() - mi.rcMonitor.left;
+            int physicalOffsetY = CaretPos.y() - mi.rcMonitor.top;
 
-        // 2. 오프셋만 DPR 적용 (논리 크기로 변환)
-        int logicalOffsetX = static_cast< int >( physicalOffsetX / dpr );
-        int logicalOffsetY = static_cast< int >( physicalOffsetY / dpr );
+            // 2. 오프셋만 DPR 적용 (논리 크기로 변환)
+            int logicalOffsetX = static_cast< int >( physicalOffsetX / dpr );
+            int logicalOffsetY = static_cast< int >( physicalOffsetY / dpr );
 
-        // 3. Qt Screen의 논리적 시작점(Geometry TopLeft)에 더함
-        // Qt의 CurScreen->geometry()는 이미 논리 좌표계입니다.
-        targetPos = CurScreen->geometry().topLeft() + QPoint( logicalOffsetX, logicalOffsetY );
-    }
-    else
-    {
-        // Fallback: 정보 획득 실패 시 단순 변환 (단일 모니터 가정)
-        targetPos = QPoint( static_cast< int >( CaretPos.x() / dpr ), static_cast< int >( CaretPos.y() / dpr ) );
-    }
+            // 3. Qt Screen의 논리적 시작점(Geometry TopLeft)에 더함
+            // Qt의 CurScreen->geometry()는 이미 논리 좌표계입니다.
+            targetPos = CurScreen->geometry().topLeft() + QPoint( logicalOffsetX, logicalOffsetY );
+        }
+        else
+        {
+            // Fallback: 정보 획득 실패 시 단순 변환 (단일 모니터 가정)
+            targetPos = QPoint( static_cast< int >( CaretPos.x() / dpr ), static_cast< int >( CaretPos.y() / dpr ) );
+        }
 
-    move( targetPos + m_offset );
+        move( targetPos + m_offset );
 
-    m_label->setText( makeStatusText() );
-    m_label->adjustSize();
-    show();
+        m_label->setText( makeStatusText() );
+        m_label->adjustSize();
+        show();
+
+    } while( false );
+
+    m_isChanged = false;
 }
 
 QString UiIndicator_Caret::makeStatusText() const

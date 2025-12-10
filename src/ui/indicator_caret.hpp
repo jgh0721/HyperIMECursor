@@ -24,6 +24,8 @@ public:
     void                                Show();
     void                                Hide();
 
+    Q_INVOKABLE void                    SltMouseWheel( const QDateTime& TimeStamp, const QPoint& Pos );
+
 private:
     Q_INVOKABLE void                    updateStatus();
     QString                             makeStatusText() const;
@@ -43,6 +45,7 @@ private:
     QLabel*                             m_label = nullptr;
     QTimer*                             m_timer = nullptr;
     QPoint                              m_offset;
+    qint64                              m_lastWheelTimeStamp = 0;
     CComPtr<IUIAutomation>              m_pAutomation;
 };
 

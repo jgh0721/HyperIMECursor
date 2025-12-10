@@ -17,11 +17,15 @@
 
 // 키보드 / 마우스 훅
 HHOOK                                   KeyboardHook = nullptr;
+HHOOK                                   MouseHook = nullptr;
 
 // 상태 변수
 std::atomic_bool                        IsKoreanMode = false;
 std::atomic_bool                        IsKoreanModeOnHook = false; // 키보드 훅을 통해 직접 획득
 uint64_t                                IMEActiveCheckTime = 0;
+
+// 기타
+CIMECursorApp*                          Main = nullptr;
 
 using namespace nsCmn;
 
@@ -31,6 +35,7 @@ using namespace nsCmn;
 CIMECursorApp::CIMECursorApp( int& argc, char* argv[] )
     : QApplication( argc, argv )
 {
+    Main = this;
     setWindowIcon( QIcon( ":/res/app_icon.ico" ) );
     QSettings::setDefaultFormat( QSettings::IniFormat );
     (void)QFontDatabase::addApplicationFont( ":res/SarasaMonoK-Light.ttf" );
@@ -39,6 +44,10 @@ CIMECursorApp::CIMECursorApp( int& argc, char* argv[] )
 CIMECursorApp::~CIMECursorApp()
 {
     GetSettings()->sync();
+
+    if( MouseHook )
+        UnhookWindowsHookEx( MouseHook );
+    MouseHook = nullptr;
 
     if( KeyboardHook )
         UnhookWindowsHookEx( KeyboardHook );
@@ -61,6 +70,7 @@ void CIMECursorApp::Initialize()
         m_pUiOpt = new UiOpt;
         m_pUiIndicatorCaret = new UiIndicator_Caret;
         m_pUiIndicatorPopup = new UiIndicator_Popup;
+        connect( this, &CIMECursorApp::sigMouseWheel, m_pUiIndicatorCaret, &UiIndicator_Caret::SltMouseWheel );
         m_pUiIndicatorCaret->SetCheckIME( GET_VALUE( OPTION_ENGINE_CARET_IS_CHECK_IME ).toBool() );
         m_pUiIndicatorCaret->SetCheckNumlock( GET_VALUE( OPTION_ENGINE_CARET_IS_CHECK_NUMLOCK ).toBool() );
         m_pUiIndicatorCaret->SetPollingMs( GET_VALUE( OPTION_ENGINE_CARET_POLLING_MS ).toInt() );
@@ -100,9 +110,16 @@ void CIMECursorApp::Initialize()
             KeyboardHook = SetWindowsHookExW( WH_KEYBOARD_LL, LowLevelKeyboardProc, hInstance, 0 );
 
             if( KeyboardHook == nullptr )
-            {
-                PrintDebugString( Format( L"키보드 마우스 훅 설치 실패 : %d", ::GetLastError() ) );
-            }
+                PrintDebugString( Format( L"키보드 훅 설치 실패 : %d", ::GetLastError() ) );
+        }
+
+        if( nsWin::PrivilegeHelper::IsRunningAsAdmin() == true &&
+            GET_VALUE( OPTION_ENGINE_CARET_IS_USE ).toBool() == true )
+        {
+            MouseHook = SetWindowsHookExW( WH_MOUSE_LL, LowLevelMouseProc, hInstance, 0 );
+
+            if( MouseHook == nullptr )
+                PrintDebugString( Format( L"마우스 훅 설치 실패 : %d", ::GetLastError() ) );
         }
 
         m_pTimer->connect( m_pTimer, &QTimer::timeout, this, &CIMECursorApp::updateIMEStatus );
@@ -136,6 +153,25 @@ void CIMECursorApp::settingsChanged()
         if( KeyboardHook )
             UnhookWindowsHookEx( KeyboardHook );
         KeyboardHook = nullptr;
+    }
+
+    if( nsWin::PrivilegeHelper::IsRunningAsAdmin() == true )
+    {
+        if( GET_VALUE( OPTION_ENGINE_CARET_IS_USE ).toBool() == true )
+        {
+            if( MouseHook == nullptr )
+            {
+                MouseHook = SetWindowsHookExW( WH_MOUSE_LL, LowLevelMouseProc, hInstance, 0 );
+                if( MouseHook == nullptr )
+                    nsCmn::PrintDebugString( nsCmn::Format( L"[HyperIMEIndicator] 키보드 후킹 설정 실패!@!" ) );
+            }
+        }
+        else
+        {
+            if( MouseHook == nullptr )
+                UnhookWindowsHookEx( MouseHook );
+            MouseHook = nullptr;
+        }
     }
 
     m_pUiIndicatorCaret->SetCheckIME( GET_VALUE( OPTION_ENGINE_CARET_IS_CHECK_IME ).toBool() );
@@ -208,6 +244,22 @@ LRESULT CIMECursorApp::LowLevelKeyboardProc( int nCode, WPARAM wParam, LPARAM lP
     } while( false );
 
     return CallNextHookEx( KeyboardHook, nCode, wParam, lParam );
+}
+
+LRESULT CIMECursorApp::LowLevelMouseProc( int nCode, WPARAM wParam, LPARAM lParam )
+{
+    do
+    {
+        if( nCode != HC_ACTION )
+            break;
+
+        if( wParam == WM_MOUSEWHEEL || wParam == WM_MOUSEHWHEEL )
+            Q_EMIT Main->sigMouseWheel( QDateTime::currentDateTime(),
+                                        QPoint( GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) ) );
+
+    } while( false );
+
+    return CallNextHookEx( MouseHook, nCode, wParam, lParam );
 }
 
 HRESULT CIMECursorApp::applyAutoStartUP()

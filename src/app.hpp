@@ -14,6 +14,9 @@ public:
 
     Q_INVOKABLE void                    Initialize();
 
+Q_SIGNALS:
+    void                                sigMouseWheel( const QDateTime& TimeStamp, const QPoint& Pos );
+
 protected:
 
     Q_INVOKABLE void                    settingsChanged();
@@ -21,6 +24,7 @@ protected:
 
 private:
     static LRESULT CALLBACK             LowLevelKeyboardProc( int nCode, WPARAM wParam, LPARAM lParam );
+    static LRESULT CALLBACK             LowLevelMouseProc( int nCode, WPARAM wParam, LPARAM lParam );
     HRESULT                             applyAutoStartUP();
 
     QMenu*                              m_notificationMenu = nullptr;
