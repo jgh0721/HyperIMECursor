@@ -71,6 +71,7 @@ void CIMECursorApp::Initialize()
         m_pUiIndicatorCaret = new UiIndicator_Caret;
         m_pUiIndicatorPopup = new UiIndicator_Popup;
         connect( this, &CIMECursorApp::sigMouseWheel, m_pUiIndicatorCaret, &UiIndicator_Caret::SltMouseWheel );
+        connect( this, &CIMECursorApp::sigVScroll, m_pUiIndicatorCaret, &UiIndicator_Caret::SltVScroll );
         m_pUiIndicatorCaret->SetCheckIME( GET_VALUE( OPTION_ENGINE_CARET_IS_CHECK_IME ).toBool() );
         m_pUiIndicatorCaret->SetCheckNumlock( GET_VALUE( OPTION_ENGINE_CARET_IS_CHECK_NUMLOCK ).toBool() );
         m_pUiIndicatorCaret->SetPollingMs( GET_VALUE( OPTION_ENGINE_CARET_POLLING_MS ).toInt() );
@@ -80,7 +81,8 @@ void CIMECursorApp::Initialize()
         connect( m_pUiOpt, &UiOpt::settingsChanged, this, &CIMECursorApp::settingsChanged );
 
         m_notificationMenu->addAction( tr( "옵션(&O)" ), [=]() {
-            m_pUiOpt->exec();
+            m_pUiOpt->show();
+            m_pUiOpt->activateWindow();
         } );
         m_notificationMenu->addSeparator();
         m_notificationMenu->addAction( tr( "정보(&A)" ), [=]() {
@@ -94,8 +96,8 @@ void CIMECursorApp::Initialize()
         connect( m_notificationIcon, &QSystemTrayIcon::activated, [this]( QSystemTrayIcon::ActivationReason Reason ) {
             if( Reason == QSystemTrayIcon::DoubleClick )
             {
+                m_pUiOpt->show();
                 m_pUiOpt->activateWindow();
-                m_pUiOpt->exec();
             }
         });
         m_notificationIcon->show();
@@ -228,18 +230,33 @@ LRESULT CIMECursorApp::LowLevelKeyboardProc( int nCode, WPARAM wParam, LPARAM lP
             break;
 
         const auto Info = reinterpret_cast< KBDLLHOOKSTRUCT* >( lParam );
-        if( Info->vkCode != VK_HANGUL )
-            break;
 
-        // 수동 토글 상태 변경
-        IsKoreanModeOnHook = !IsKoreanModeOnHook;
-        // 마지막 체크 시간 무효화
-        IMEActiveCheckTime = 0;
+        if( wParam == WM_KEYDOWN )
+        {
+            if( Info->vkCode == VK_UP ||
+                Info->vkCode == VK_DOWN )
+            {
+                if( (GetAsyncKeyState(VK_CONTROL) & 0x8000) )
+                {
+                    Q_EMIT Main->sigVScroll( QDateTime::currentDateTime(), Info->vkCode == VK_UP );
+                }
 
-        const auto Future = std::async( std::launch::async, []() {
-            std::this_thread::sleep_for( std::chrono::milliseconds( 15 ) );
-            QMetaObject::invokeMethod( qApp, "updateIMEStatus", Qt::QueuedConnection );
-        } );
+                break;
+            }
+        }
+
+        if( Info->vkCode == VK_HANGUL )
+        {
+            // 수동 토글 상태 변경
+            IsKoreanModeOnHook = !IsKoreanModeOnHook;
+            // 마지막 체크 시간 무효화
+            IMEActiveCheckTime = 0;
+
+            const auto Future = std::async( std::launch::async, []() {
+                std::this_thread::sleep_for( std::chrono::milliseconds( 15 ) );
+                QMetaObject::invokeMethod( qApp, "updateIMEStatus", Qt::QueuedConnection );
+            } );
+        }
 
     } while( false );
 

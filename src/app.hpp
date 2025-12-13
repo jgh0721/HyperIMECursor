@@ -15,6 +15,7 @@ public:
     Q_INVOKABLE void                    Initialize();
 
 Q_SIGNALS:
+    void                                sigVScroll( const QDateTime& TimeStamp, bool IsUp );
     void                                sigMouseWheel( const QDateTime& TimeStamp, const QPoint& Pos );
 
 protected:

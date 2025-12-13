@@ -25,6 +25,7 @@ public:
     void                                Hide();
 
     Q_INVOKABLE void                    SltMouseWheel( const QDateTime& TimeStamp, const QPoint& Pos );
+    Q_INVOKABLE void                    SltVScroll( const QDateTime& TimeStamp, bool IsUp );
 
 private:
     Q_INVOKABLE void                    updateStatus();

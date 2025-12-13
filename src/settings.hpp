@@ -61,6 +61,12 @@ extern uint64_t             IMEActiveCheckTime;
 #define OPTION_ENGINE_POPUP_IS_USE                      OPTION_ENGINE_POPUP_GROUP "/Use"
 #define OPTION_ENGINE_POPUP_IS_USE_DEFAULT              false
 
+#define OPTION_HOOK_EXCLUDE_GROUP                       "AutoHookUnload"
+#define OPTION_HOOK_EXCLUDE_IS_USE                      OPTION_HOOK_EXCLUDE_GROUP "/Use"
+#define OPTION_HOOK_EXCLUDE_IS_USE_DEFAULT              true
+#define OPTION_HOOK_EXCLUDE_PROCESS_NAMES               OPTION_HOOK_EXCLUDE_GROUP "/ProcessNames"
+#define OPTION_HOOK_EXCLUDE_PROCESS_NAMES_DEFAULT       "GenshinImpact.exe|"
+
 #define GET_VALUE( Value ) \
     GetSettings()->value( Value, Value##_DEFAULT )
 

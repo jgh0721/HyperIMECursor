@@ -97,6 +97,12 @@ void UiIndicator_Caret::SltMouseWheel( const QDateTime& TimeStamp, const QPoint&
     qSwap( m_lastWheelTimeStamp, Wheel );
 }
 
+void UiIndicator_Caret::SltVScroll( const QDateTime& TimeStamp, bool IsUp )
+{
+    auto Wheel = TimeStamp.toMSecsSinceEpoch();
+    qSwap( m_lastWheelTimeStamp, Wheel );
+}
+
 void UiIndicator_Caret::updateStatus()
 {
     static QPoint                       PrevCaretPos = {};
