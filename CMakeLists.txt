@@ -76,6 +76,8 @@ set( SOURCES
         src/app.hpp
         src/CTaskSchedulerHelper.cpp
         src/CTaskSchedulerHelper.hpp
+        src/CProcessMonitorETW.cpp
+        src/CProcessMonitorETW.hpp
 )
  set( RESOURCES
       src/version.rc

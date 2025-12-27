@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+//#define INITGUID
 #include <tchar.h>
 #include <windows.h>
 #include <msctf.h>
