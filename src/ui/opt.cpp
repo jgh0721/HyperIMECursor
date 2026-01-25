@@ -21,10 +21,11 @@ void UiOpt::LoadSettings()
     Ui.rdoIME_Attach->setChecked( GET_VALUE( OPTION_DETECT_ATTACH_THREAD_INPUT ).toBool() );
     Ui.rdoIME_SendMessage->setChecked( GET_VALUE( OPTION_DETECT_SENDMESSAGE ).toBool() );
     Ui.chkIME_KeyboardHook->setChecked( GET_VALUE( OPTION_DETECT_KEYBOARD_HOOK ).toBool() );
+    Ui.chkIME_MouseHook->setChecked( GET_VALUE( OPTION_DETECT_MOUSE_HOOK ).toBool() );
+
     Ui.spbIMEPollingMs->setValue( GET_VALUE( OPTION_DETECT_DETECT_POLLING_MS ).toInt() );
 
     Ui.chkIsRunOnStartup->setChecked( GET_VALUE( OPTION_STARTUP_START_ON_WINDOWS_BOOT ).toBool() );
-    Ui.chkIsRunAsAdminOnStartup->setChecked( GET_VALUE( OPTION_STARTUP_START_AS_ADMIN_ON_WINDOWS_BOOT ).toBool() );
 
     Ui.chkIsCaret->setChecked( GET_VALUE( OPTION_ENGINE_CARET_IS_USE ).toBool() );
     Ui.chkIsCaretIME->setChecked( GET_VALUE( OPTION_ENGINE_CARET_IS_CHECK_IME ).toBool() );
@@ -44,10 +45,10 @@ void UiOpt::SaveSettings()
     SET_VALUE( OPTION_DETECT_ATTACH_THREAD_INPUT, Ui.rdoIME_Attach->isChecked() );
     SET_VALUE( OPTION_DETECT_SENDMESSAGE, Ui.rdoIME_SendMessage->isChecked() );
     SET_VALUE( OPTION_DETECT_KEYBOARD_HOOK, Ui.chkIME_KeyboardHook->isChecked() );
+    SET_VALUE( OPTION_DETECT_MOUSE_HOOK, Ui.chkIME_MouseHook->isChecked() );
     SET_VALUE( OPTION_DETECT_DETECT_POLLING_MS, Ui.spbIMEPollingMs->value() );
 
     SET_VALUE( OPTION_STARTUP_START_ON_WINDOWS_BOOT, Ui.chkIsRunOnStartup->isChecked() );
-    SET_VALUE( OPTION_STARTUP_START_AS_ADMIN_ON_WINDOWS_BOOT, Ui.chkIsRunAsAdminOnStartup->isChecked() );
 
     SET_VALUE( OPTION_ENGINE_CARET_IS_USE, Ui.chkIsCaret->isChecked() );
     SET_VALUE( OPTION_ENGINE_CARET_IS_CHECK_IME, Ui.chkIsCaretIME->isChecked() );

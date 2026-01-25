@@ -5,7 +5,6 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 
-
 HINSTANCE                               hInstance = nullptr;
 
 using namespace nsCmn;
@@ -155,7 +154,7 @@ bool IsKoreanModeInIME()
 {
     bool IsIMEMode = false;
     static const auto StSettings = GetSettings();
-    constexpr uint64_t                      IMEActiveCheckPeriod = 500;
+    constexpr uint64_t IMEActiveCheckPeriod = 500;
 
     do
     {
@@ -177,7 +176,7 @@ bool IsKoreanModeInIME()
         bool IsAttached = false;
 
         if( IsAttachThreadUI == true && CurrentThreadId == TargetThreadId )
-            IsAttached = AttachThreadInput( CurrentThreadId, TargetThreadId, FALSE );
+            IsAttached = AttachThreadInput( CurrentThreadId, TargetThreadId, TRUE );
 
         do
         {

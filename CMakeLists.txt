@@ -12,7 +12,7 @@ set(CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION "${WINDOWS_SDK_VERSION}" CACHE STRI
 set(ENV{WindowsSDKVersion} "${WINDOWS_SDK_VERSION}\\")
 set(ENV{WindowsSDKLibVersion} "${WINDOWS_SDK_VERSION}\\")
 
-project(HyperIMEIndicator LANGUAGES C CXX VERSION 0.7.0.0)
+project(HyperIMEIndicator LANGUAGES C CXX VERSION 0.9.0.0)
  
 # C++ 표준 설정
 set(CMAKE_CXX_STANDARD 20)
@@ -109,20 +109,14 @@ if (MSVC)
     )
 endif()
 
-## 링크 라이브러리
-#target_link_libraries(HyperIMEIndicator
-#PUBLIC
-#    gdiplus
-#    imm32
-#    comctl32
-#)
-#
-#set_property(TARGET HyperIMEIndicator PROPERTY
-#        MSVC_DEBUG_INFORMATION_FORMAT "$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>")
-## set_property(TARGET HyperIMEIndicator PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-#
-## On Windows, copy the Slint DLL next to the application binary so that it's found.
-#if (WIN32)
-#    add_custom_command(TARGET HyperIMEIndicator POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:HyperIMEIndicator> $<TARGET_FILE_DIR:HyperIMEIndicator> COMMAND_EXPAND_LISTS)
-#endif()
-#
+# 링크 라이브러리
+target_link_libraries(HyperIMEIndicator
+PUBLIC
+    gdiplus
+    imm32
+    comctl32
+)
+
+set_property(TARGET HyperIMEIndicator PROPERTY
+        MSVC_DEBUG_INFORMATION_FORMAT "$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>")
+ set_property(TARGET HyperIMEIndicator PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")

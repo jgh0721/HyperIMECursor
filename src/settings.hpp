@@ -23,6 +23,8 @@ extern uint64_t             IMEActiveCheckTime;
 #define OPTION_DETECT_SENDMESSAGE_DEFAULT               true
 #define OPTION_DETECT_KEYBOARD_HOOK                     OPTION_DETECT_GROUP "/KeyboardHook"
 #define OPTION_DETECT_KEYBOARD_HOOK_DEFAULT             false
+#define OPTION_DETECT_MOUSE_HOOK                        OPTION_DETECT_GROUP "/MouseHook"
+#define OPTION_DETECT_MOUSE_HOOK_DEFAULT                false
 #define OPTION_DETECT_DETECT_POLLING_MS                 OPTION_DETECT_GROUP "/PollingMs"
 #define OPTION_DETECT_DETECT_POLLING_MS_DEFAULT         1000
 
@@ -65,7 +67,7 @@ extern uint64_t             IMEActiveCheckTime;
 #define OPTION_HOOK_EXCLUDE_IS_USE                      OPTION_HOOK_EXCLUDE_GROUP "/Use"
 #define OPTION_HOOK_EXCLUDE_IS_USE_DEFAULT              true
 #define OPTION_HOOK_EXCLUDE_PROCESS_NAMES               OPTION_HOOK_EXCLUDE_GROUP "/ProcessNames"
-#define OPTION_HOOK_EXCLUDE_PROCESS_NAMES_DEFAULT       "GenshinImpact.exe|"
+#define OPTION_HOOK_EXCLUDE_PROCESS_NAMES_DEFAULT       "HYP.exe|GenshinImpact.exe|"
 
 #define GET_VALUE( Value ) \
     GetSettings()->value( Value, Value##_DEFAULT )
