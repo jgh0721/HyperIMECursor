@@ -348,9 +348,7 @@ LRESULT CIMECursorApp::LowLevelKeyboardProc( int nCode, WPARAM wParam, LPARAM lP
                  // 마지막 체크 시간 무효화
                  IMEActiveCheckTime = 0;
 
-                 QThreadPool::globalInstance()->tryStart( []() {
-                     QMetaObject::invokeMethod( qApp, "sltUpdateIMEStatus", Qt::QueuedConnection );
-                 } );
+                QMetaObject::invokeMethod( qApp, "sltUpdateIMEStatus", Qt::QueuedConnection );
              }
          }
 

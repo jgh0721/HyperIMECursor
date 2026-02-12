@@ -24,6 +24,8 @@ UiIndicator_Caret::UiIndicator_Caret( QWidget* parent )
     setLayout( layout );
 
     layout->setContentsMargins( 0, 0, 0, 0 );
+    layout->setSpacing( 0 );
+    layout->setSizeConstraint( QLayout::SetFixedSize );
 
     m_label = new QLabel( this );
     m_label->setFont( QFont( DEFAULT_BUILTIN_FONT_FAMILY ) );
@@ -51,6 +53,9 @@ void UiIndicator_Caret::SetIMEMode( bool IsKoreanMode )
 {
     m_isChanged = m_isCurrentIMEMode != IsKoreanMode;
     m_isCurrentIMEMode = IsKoreanMode;
+
+    if( m_isChanged == true )
+        QMetaObject::invokeMethod( m_label, "setText", Qt::QueuedConnection, makeStatusText() );
 }
 
 void UiIndicator_Caret::SetPollingMs( int Ms )
@@ -162,7 +167,11 @@ void UiIndicator_Caret::updateStatus()
         }
 
         if( CurScreen != screen() )
+        {
             setScreen( CurScreen );
+            m_label->updateGeometry();
+            updateGeometry();
+        }
 
         // 다중 모니터 간에 캐럿이 이동할 때의 보정 처리, 최초 위젯이 생성된 QScreen 과 다른 스크린에 캐럿이 있을 때의 처리가 필요함.
         POINT       pt   = { CaretPos.x(), CaretPos.y() };
@@ -196,6 +205,7 @@ void UiIndicator_Caret::updateStatus()
 
         m_label->setText( makeStatusText() );
         m_label->adjustSize();
+        adjustSize();
         show();
 
     } while( false );
